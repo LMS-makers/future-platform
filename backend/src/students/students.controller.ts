@@ -15,6 +15,12 @@ export class StudentsController {
     private readonly studentsService: StudentsService,
   ) {}
 
+  // GET: ~/api/students/count
+  @Get('count')
+  async getNumberOfStudents() {
+    return this.studentsService.getNumberOfStudents();
+  }
+
   // POST: ~/api/students/create
   @Post('create')
   @UseGuards(AuthRolesGuard)

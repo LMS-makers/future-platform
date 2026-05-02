@@ -19,6 +19,11 @@ export class UsersService {
     private readonly usersRepository: Repository<User>,
   ) {}
 
+  // Get Number of Users
+  public async getNumberOfUsers() {
+    return this.usersRepository.count();
+  }
+
   /**
    * Create a new user
    * @param registerDto

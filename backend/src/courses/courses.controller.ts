@@ -13,6 +13,12 @@ import { AddPrerequisiteDto } from "./dtos/add-prerequisite.dto";
 export class CoursesController {
     constructor(private readonly coursesService: CoursesService) { }
 
+    // GET: ~/api/courses/count
+    @Get('count')
+    async getNumberOfCourses() {
+        return this.coursesService.getNumberOfCourses();
+    }
+
     // POST: ~/api/courses
     @Post()
     @UseGuards(AuthRolesGuard)

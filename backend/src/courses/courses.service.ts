@@ -204,4 +204,8 @@ export class CoursesService {
         };
     }
 
+    // Get Number of Courses
+    public async getNumberOfCourses() {
+        return this.courseRepository.count();
+    }
 }

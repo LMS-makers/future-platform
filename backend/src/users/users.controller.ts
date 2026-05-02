@@ -102,4 +102,10 @@ export class UsersController {
   ) {
     return this.usersService.addUser(createUserDto, user.sub);
   }
+
+  // GET: ~/api/users/count
+  @Get('count')
+  async getNumberOfUsers() {
+    return this.usersService.getNumberOfUsers();
+  }
 }

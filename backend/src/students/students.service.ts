@@ -124,7 +124,22 @@ export class StudentsService {
   /**
    * Get student by id
    * @param id
-   * @returns
+   * @returns {
+   * message: string,
+   * data: {
+   * student: {
+   * id: string,
+   * student_code: string,
+   * enrollment_date: Date,
+   * level: Level,
+   * semester: number,
+   * department: Department,
+   * user_id: string,
+   * user: User,
+   * enrollments: Enrollment[]
+   * },
+   * },
+   * }
    */
   public async getStudentById(id: string) {
     const student = await this.studentRepository.findOne({
@@ -139,6 +154,27 @@ export class StudentsService {
     return student;
   }
 
+  /**
+   * Get student dashboard
+   * @param student_id
+   * @returns {
+   * message: string,
+   * data: {
+   * student: {
+   * name: string,
+   * code: string,
+   * level: Level,
+   * semester: number,
+   * department: Department,
+   * },
+   * coursesStats: {
+   * totalCourses: number,
+   * progressCourses: Course[],
+   * completedCourses: Course[],
+   * },
+   * },
+   * }
+   */
   public async studentDashboard(student_id: string) {
     const student = await this.getStudentById(student_id);
     const progressCourses = student.enrollments.
@@ -215,5 +251,10 @@ export class StudentsService {
       throw new NotFoundException('Student not found');
     }
     return await this.studentRepository.update(id, dto);
+  }
+
+  // Get Number of Students
+  public async getNumberOfStudents() {
+    return this.studentRepository.count();
   }
 }

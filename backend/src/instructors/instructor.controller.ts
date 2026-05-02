@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Param, UseGuards } from "@nestjs/common";
+import { Controller, Post, Body, Param, UseGuards, Get } from "@nestjs/common";
 import { InstructorService } from "./instructor.service";
 import { AuthRolesGuard } from "src/users/guards/auth-role.guard";
 import { Roles } from "src/users/decorators/user-role.decorator";
@@ -18,5 +18,11 @@ export class InstructorController {
     @Roles(Role.ADMIN)
     create(@Body() createInstructorDto: CreateInstructorDto, @CurrentUser() user: type.JWTPayloadType) {
         return this.instructorService.createInstructor(createInstructorDto, user.sub);
+    }
+
+    // GET: ~/api/instructors/count
+    @Get('count')
+    async getNumberOfInstructors() {
+        return this.instructorService.getNumberOfInstructors();
     }
 }

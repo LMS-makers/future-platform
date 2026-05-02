@@ -78,6 +78,12 @@ export class InstructorService {
         });
     }
 
+    /**
+     * Get instructor by id
+     * @param id {string} Instructor ID
+     * @returns {Instructor}
+     * @throws NotFoundException if instructor not found
+     */
     public async getInstructorById(id: string) {
         const instructor = await this.instructorRepository.findOne({
             where: { id },
@@ -86,5 +92,15 @@ export class InstructorService {
             throw new NotFoundException('Instructor not found');
         }
         return instructor;
+    }
+
+    public async getAllInstructors() {
+        return this.instructorRepository.find({
+            relations: ['user'],
+        });
+    }
+
+    public async getNumberOfInstructors() {
+        return this.instructorRepository.count();
     }
 }
