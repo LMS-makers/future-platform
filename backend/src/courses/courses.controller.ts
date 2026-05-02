@@ -62,7 +62,11 @@ export class CoursesController {
     @Patch(':course_id')
     @UseGuards(AuthRolesGuard)
     @Roles(Role.ADMIN)
-    async updateCourse(@Param('course_id') course_id: string, @Body() updateCourseDto: UpdateCourseDto, @CurrentUser() user: type.JWTPayloadType) {
+    async updateCourse(
+        @Param('course_id') course_id: string,
+        @Body() updateCourseDto: UpdateCourseDto,
+        @CurrentUser() user: type.JWTPayloadType
+    ) {
         return this.coursesService.updateCourse(course_id, updateCourseDto, user.sub);
     }
 }
