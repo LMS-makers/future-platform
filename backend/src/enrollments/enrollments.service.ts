@@ -42,11 +42,11 @@ export class EnrollmentService {
         // check if student has met the prerequisite requirement
 
         // 1 => make an array of completed courses ids
-        const completedCourseIds = completedCourses.map(course => course.id);
-        
+        const completedCourseIds = completedCourses.data.completedCourses.map(course => course.id);
+
         // 2 => get the prerequisites of the course
         const prerequisites = course.data.course.prerequisites;
-        
+
         // 3 => check if the student has met the prerequisite requirement
         if (prerequisites && prerequisites.length > 0) {
             for (const pre of prerequisites) {

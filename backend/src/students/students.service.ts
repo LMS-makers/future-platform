@@ -141,7 +141,7 @@ export class StudentsService {
    * },
    * }
    */
-  public async getStudentById(id: string) {
+  public async getStudentById(id: string): Promise<Student> {
     const student = await this.studentRepository.findOne({
       where: { id },
       relations: ['user', 'enrollments', 'enrollments.course'],
@@ -210,7 +210,15 @@ export class StudentsService {
    */
   public async getStudentCompletedCourses(student_id: string) {
     const student = await this.getStudentById(student_id);
-    return student.enrollments.filter((enrollment) => enrollment.status === EnrollmentStatus.PASSED).map((enrollment) => enrollment.course);
+    const completedCourses = student.enrollments.
+      filter((enrollment) => enrollment.status === EnrollmentStatus.PASSED)
+      .map((enrollment) => enrollment.course);
+    return {
+      message: 'Student completed courses fetched successfully',
+      data: {
+        completedCourses,
+      },
+    };
   }
 
 

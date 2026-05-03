@@ -17,11 +17,15 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
-  ) {}
+  ) { }
 
   // Get Number of Users
   public async getNumberOfUsers() {
-    return this.usersRepository.count();
+    return this.usersRepository.count({
+      where: {
+        role: Role.ADMIN,
+      },
+    });
   }
 
   /**

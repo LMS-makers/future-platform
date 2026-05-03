@@ -9,7 +9,7 @@ import { Roles } from 'src/users/decorators/user-role.decorator';
 import { Department, Gender, Level, Role } from 'utils/enum';
 
 @Controller('api/students')
-@UseGuards(AuthGuard)
+// @UseGuards(AuthGuard)
 export class StudentsController {
   constructor(
     private readonly studentsService: StudentsService,
