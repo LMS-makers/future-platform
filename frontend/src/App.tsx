@@ -16,7 +16,7 @@ function App() {
       <Navbar />
       <Hero />
       <WhyChooseHICIT />
-      {/* <Departments /> */}
+      <Departments />
       <LMSSection />
       <DepartmentsGrid />
       <ExperienceSection />
