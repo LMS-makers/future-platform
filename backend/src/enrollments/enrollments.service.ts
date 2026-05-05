@@ -2,12 +2,12 @@ import { Injectable, NotFoundException, BadRequestException } from "@nestjs/comm
 import { InjectRepository } from "@nestjs/typeorm";
 import { Enrollment } from "./entities/enrollment.entity";
 import { Repository, In } from "typeorm";
-import { EnrollmentStatus, Role } from "utils/enum";
-import { CoursesService } from "src/courses/courses.service";
-import { StudentsService } from "src/students/students.service";
+import { EnrollmentStatus, Role } from "../../utils/enum";
+import { CoursesService } from "../courses/courses.service";
+import { StudentsService } from "../students/students.service";
 import { CreateEnrollmentDto } from "./dtos/create-enrollment.dto";
-import { UsersService } from "src/users/users.service";
-import { GradesService } from "src/grades/grades.service";
+import { UsersService } from "../users/users.service";
+import { GradesService } from "../grades/grades.service";
 
 @Injectable()
 export class EnrollmentService {

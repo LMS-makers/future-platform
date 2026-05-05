@@ -4,9 +4,9 @@ import { Grade } from "./entities/grade.entity";
 import { EnrollmentStatus, Grade as GradeEnum } from "../../utils/enum";
 import { Repository } from "typeorm";
 import { UpdateGradeDto } from "./dtos/update-grade.dto";
-import { Enrollment } from "src/enrollments/entities/enrollment.entity";
-import { StudentsService } from "src/students/students.service";
-import { EnrollmentService } from "src/enrollments/enrollments.service";
+import { Enrollment } from "../enrollments/entities/enrollment.entity";
+import { StudentsService } from "../students/students.service";
+import { EnrollmentService } from "../enrollments/enrollments.service";
 
 @Injectable()
 export class GradesService {

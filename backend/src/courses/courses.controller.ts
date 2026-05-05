@@ -2,10 +2,10 @@ import { Controller, Post, Body, UseGuards, Param, Get, Put, Patch } from "@nest
 import { CoursesService } from "./courses.service";
 import { CreateCourseDto } from "./dtos/create-course.dto";
 import { UpdateCourseDto } from "./dtos/update-course.dto";
-import { AuthRolesGuard } from "src/users/guards/auth-role.guard";
-import { Roles } from "src/users/decorators/user-role.decorator";
+import { AuthRolesGuard } from "../users/guards/auth-role.guard";
+import { Roles } from "../users/decorators/user-role.decorator";
 import { Role } from "../../utils/enum";
-import { CurrentUser } from "src/users/decorators/current-user.decorator";
+import { CurrentUser } from "../users/decorators/current-user.decorator";
 import * as type from '../../utils/type';
 import { AddPrerequisiteDto } from "./dtos/add-prerequisite.dto";
 

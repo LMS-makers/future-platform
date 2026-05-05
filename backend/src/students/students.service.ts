@@ -3,11 +3,11 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Student } from './entities/student.entity';
 import { Repository, DataSource } from 'typeorm';
 import { CreateStudentDto } from './dtos/create-student.dto';
-import { UsersService } from 'src/users/users.service';
-import { User } from 'src/users/entities/user.entity';
+import { UsersService } from '../users/users.service';
+import { User } from '../users/entities/user.entity';
 import { Department, EnrollmentStatus, Gender, Level, Role } from '../../utils/enum';
 import { UpdateStudentDto } from './dtos/update-student.dto';
-import { Enrollment } from 'src/enrollments/entities/enrollment.entity';
+import { Enrollment } from '../enrollments/entities/enrollment.entity';
 
 @Injectable()
 export class StudentsService {

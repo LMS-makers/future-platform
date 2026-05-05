@@ -6,7 +6,7 @@ import { CreateUserDto } from './dtos/create-user.dto';
 import { LoginDto } from './dtos/login.dto';
 import { InitLoginDto } from './dtos/init-login.dto';
 import { SetPasswordDto } from './dtos/set-password.dto';
-import { JWTPayloadType } from 'utils/type';
+import { JWTPayloadType } from '../../utils/type';
 import { BadRequestException } from '@nestjs/common';
 
 @Injectable()

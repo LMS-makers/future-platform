@@ -1,6 +1,6 @@
 import { IsEnum, IsNotEmpty, IsNotEmptyObject, IsOptional, IsString, ValidateNested } from "class-validator";
 import { Department, InstructorDegree, InstructorRank } from "../../../utils/enum";
-import { CreateUserDto } from "src/users/dtos/create-user.dto";
+import { CreateUserDto } from "../../users/dtos/create-user.dto";
 import { Type } from "class-transformer";
 
 export class CreateInstructorDto {

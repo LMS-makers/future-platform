@@ -1,9 +1,9 @@
 import { forwardRef, Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { InstructorCourse } from "./entities/assign-course.entity";
-import { CoursesModule } from "src/courses/courses.module";
-import { InstructorModule } from "src/instructors/instructor.module";
-import { UsersModule } from "src/users/users.module";
+import { CoursesModule } from "../courses/courses.module";
+import { InstructorModule } from "../instructors/instructor.module";
+import { UsersModule } from "../users/users.module";
 import { JwtModule } from "@nestjs/jwt";
 import { AssignCourseController } from "./assign.controller";
 import { AssignCourseService } from "./assign.service";

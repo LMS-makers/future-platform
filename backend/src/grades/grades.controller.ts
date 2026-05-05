@@ -1,8 +1,8 @@
 import { Body, Controller, Get, HttpCode, Param, Patch, Post, Query, UseGuards } from "@nestjs/common";
 import { UpdateGradeDto } from "./dtos/update-grade.dto";
 import { GradesService } from "./grades.service";
-import { AuthRolesGuard } from "src/users/guards/auth-role.guard";
-import { Roles } from "src/users/decorators/user-role.decorator";
+import { AuthRolesGuard } from "../users/guards/auth-role.guard";
+import { Roles } from "../users/decorators/user-role.decorator";
 import { Role } from "../../utils/enum";
 
 @Controller('api/grades')
