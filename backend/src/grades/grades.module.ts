@@ -3,11 +3,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Grade } from './entities/grade.entity';
 import { GradesController } from './grades.controller';
 import { GradesService } from './grades.service';
-import { UsersModule } from 'src/users/users.module';
+import { UsersModule } from '../users/users.module';
 import { JwtModule } from '@nestjs/jwt';
-import { Enrollment } from 'src/enrollments/entities/enrollment.entity';
-import { StudentsModule } from 'src/students/students.module';
-import { EnrollmentsModule } from 'src/enrollments/enrollments.module';
+import { Enrollment } from '../enrollments/entities/enrollment.entity';
+import { StudentsModule } from '../students/students.module';
+import { EnrollmentsModule } from '../enrollments/enrollments.module';
 
 @Module({
     imports: [
