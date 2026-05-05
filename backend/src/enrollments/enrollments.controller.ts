@@ -3,9 +3,9 @@ import { EnrollmentService } from "./enrollments.service";
 import { CreateEnrollmentDto } from "./dtos/create-enrollment.dto";
 import { AuthRolesGuard } from "src/users/guards/auth-role.guard";
 import { Roles } from "src/users/decorators/user-role.decorator";
-import { Role } from "utils/enum";
+import { Role } from "../../utils/enum";
 import { CurrentUser } from "src/users/decorators/current-user.decorator";
-import * as type from "utils/type";
+import * as type from "../../utils/type";
 import { UpdateEnrollmentDto } from "./dtos/update-enrollment.dto";
 
 @Controller('api/enrollments')

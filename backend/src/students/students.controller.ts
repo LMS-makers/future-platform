@@ -3,10 +3,10 @@ import { AuthGuard } from 'src/users/guards/auth.guard';
 import { CreateStudentDto } from './dtos/create-student.dto';
 import { StudentsService } from './students.service';
 import { CurrentUser } from 'src/users/decorators/current-user.decorator';
-import * as type from 'utils/type';
+import * as type from '../../utils/type';
 import { AuthRolesGuard } from 'src/users/guards/auth-role.guard';
 import { Roles } from 'src/users/decorators/user-role.decorator';
-import { Department, Gender, Level, Role } from 'utils/enum';
+import { Department, Gender, Level, Role } from '../../utils/enum';
 
 @Controller('api/students')
 // @UseGuards(AuthGuard)

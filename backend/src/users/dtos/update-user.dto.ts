@@ -1,5 +1,5 @@
 import { IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString, MaxLength, MinLength } from "class-validator";
-import { Role } from "utils/enum";
+import { Role } from "../../../utils/enum";
 
 export class UpdateUserDto {
     @IsOptional()

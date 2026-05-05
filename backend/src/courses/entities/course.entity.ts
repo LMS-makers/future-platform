@@ -4,7 +4,7 @@ import {
   PrimaryGeneratedColumn,
   OneToMany,
 } from 'typeorm';
-import { Department, CreditHours, Semester, Level } from 'utils/enum';
+import { Department, CreditHours, Semester, Level } from '../../../utils/enum';
 import { CoursePrerequisite } from './course-prerequisite.entity';
 import { Enrollment } from 'src/enrollments/entities/enrollment.entity';
 import { InstructorCourse } from 'src/assign-course/entities/assign-course.entity';

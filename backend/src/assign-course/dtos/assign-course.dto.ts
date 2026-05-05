@@ -1,5 +1,5 @@
 import { IsNotEmpty, IsString, IsInt, IsEnum } from 'class-validator';
-import { Semester } from 'utils/enum';
+import { Semester } from '../../../utils/enum';
 
 export class AssignCourseDto {
   @IsString()

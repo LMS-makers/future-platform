@@ -1,4 +1,4 @@
-import { Semester } from "utils/enum";
+import { Semester } from "../../../utils/enum";
 import { IsString, IsNumber, IsEnum, IsNotEmpty } from "class-validator";
 
 export class CreateEnrollmentDto {

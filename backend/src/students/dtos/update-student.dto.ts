@@ -1,5 +1,5 @@
 import { IsEnum, IsNumber, IsOptional, IsString } from "class-validator";
-import { Semester } from "utils/enum";
+import { Semester } from "../../../utils/enum";
 
 export class UpdateStudentDto {
     @IsNumber()

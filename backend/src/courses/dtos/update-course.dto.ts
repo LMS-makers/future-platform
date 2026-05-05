@@ -1,5 +1,5 @@
 import { IsEnum, IsOptional, IsString, IsNumber } from "class-validator";
-import { Department, CreditHours, Semester, Level } from "utils/enum";
+import { Department, CreditHours, Semester, Level } from "../../../utils/enum";
 
 export class UpdateCourseDto {
     @IsString()

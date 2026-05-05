@@ -11,7 +11,7 @@ import {
 } from 'typeorm';
 import { Student } from 'src/students/entities/student.entity';
 import { Course } from 'src/courses/entities/course.entity';
-import { EnrollmentStatus, Semester } from 'utils/enum';
+import { EnrollmentStatus, Semester } from '../../../utils/enum';
 import { Grade } from 'src/grades/entities/grade.entity';
 
 @Entity('enrollments')

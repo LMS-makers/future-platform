@@ -4,7 +4,7 @@ import { Course } from "./entities/course.entity";
 import { Repository } from "typeorm";
 import { UsersService } from "src/users/users.service";
 import { CreateCourseDto } from "./dtos/create-course.dto";
-import { Role } from "utils/enum";
+import { Role } from "../../utils/enum";
 import { UpdateCourseDto } from "./dtos/update-course.dto";
 import { CoursePrerequisite } from "./entities/course-prerequisite.entity";
 import { AddPrerequisiteDto } from "./dtos/add-prerequisite.dto";

@@ -1,5 +1,5 @@
 import { IsEnum, IsOptional, IsString } from "class-validator";
-import { EnrollmentStatus } from "utils/enum";
+import { EnrollmentStatus } from "../../../utils/enum";
 
 export class UpdateEnrollmentDto {
     @IsEnum(EnrollmentStatus)

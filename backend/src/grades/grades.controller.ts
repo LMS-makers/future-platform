@@ -3,7 +3,7 @@ import { UpdateGradeDto } from "./dtos/update-grade.dto";
 import { GradesService } from "./grades.service";
 import { AuthRolesGuard } from "src/users/guards/auth-role.guard";
 import { Roles } from "src/users/decorators/user-role.decorator";
-import { Role } from "utils/enum";
+import { Role } from "../../utils/enum";
 
 @Controller('api/grades')
 export class GradesController {

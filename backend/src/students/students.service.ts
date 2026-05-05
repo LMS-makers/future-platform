@@ -5,7 +5,7 @@ import { Repository, DataSource } from 'typeorm';
 import { CreateStudentDto } from './dtos/create-student.dto';
 import { UsersService } from 'src/users/users.service';
 import { User } from 'src/users/entities/user.entity';
-import { Department, EnrollmentStatus, Gender, Level, Role } from 'utils/enum';
+import { Department, EnrollmentStatus, Gender, Level, Role } from '../../utils/enum';
 import { UpdateStudentDto } from './dtos/update-student.dto';
 import { Enrollment } from 'src/enrollments/entities/enrollment.entity';
 

@@ -8,9 +8,9 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
-import { JWTPayloadType } from 'utils/type';
+import { JWTPayloadType } from '../../../utils/type';
 import { Reflector } from '@nestjs/core';
-import { Role } from 'utils/enum';
+import { Role } from '../../../utils/enum';
 import { UsersService } from '../users.service';
 
 @Injectable()

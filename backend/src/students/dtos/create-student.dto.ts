@@ -9,7 +9,7 @@ import {
   IsString,
   ValidateNested,
 } from 'class-validator';
-import { Department, HighSchoolType, Level, Semester } from 'utils/enum';
+import { Department, HighSchoolType, Level, Semester } from '../../../utils/enum';
 import { CreateUserDto } from 'src/users/dtos/create-user.dto';
 import { Type } from 'class-transformer';
 
