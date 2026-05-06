@@ -94,6 +94,24 @@ export class CoursesService {
         };
     }
 
+    public async getCourseByCode(course_code: string): Promise<{ message: string, data: { course: Course } }> {
+        const course = await this.courseRepository.findOne({
+            where: { course_code },
+            relations: ['prerequisites', 'prerequisites.prerequisite'],
+        });
+
+        if (!course) {
+            throw new NotFoundException('Course not found');
+        }
+
+        return {
+            message: 'Course fetched successfully',
+            data: {
+                course,
+            },
+        };
+    }
+
     /**
      * Update course
      * @param id 

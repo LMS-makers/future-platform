@@ -2,13 +2,21 @@ import { Semester } from "../../../utils/enum";
 import { IsString, IsNumber, IsEnum, IsNotEmpty } from "class-validator";
 
 export class CreateEnrollmentDto {
-    @IsString()
-    @IsNotEmpty()
-    studentId: string;
+    // @IsString()
+    // @IsNotEmpty()
+    // studentId: string;
 
     @IsString()
     @IsNotEmpty()
-    courseId: string;
+    student_code: string;
+
+    // @IsString()
+    // @IsNotEmpty()
+    // course_id: string;
+
+    @IsString()
+    @IsNotEmpty()
+    course_code: string;
     
     @IsNumber()
     @IsNotEmpty()
