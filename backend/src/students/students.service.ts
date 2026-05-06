@@ -17,6 +17,8 @@ export class StudentsService {
     private readonly studentRepository: Repository<Student>,
     @InjectRepository(Enrollment)
     private readonly enrollmentRepository: Repository<Enrollment>,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
     private readonly usersService: UsersService,
   ) { }
 
@@ -27,8 +29,19 @@ export class StudentsService {
    */
   public async createStudent(dto: CreateStudentDto, admin_id: string) {
     await this.usersService.checkValidation(admin_id, Role.ADMIN);
+
     const { user, ...studentData } = dto;
-    await this.usersService.findByNationalId(user.national_id);
+
+    // We didn't use usersService.findByNationalId(user.national_id)
+    // Because it will throw an error if the user is not found
+    // We want to check if the user exists and if it does, we want to update it
+    // If it doesn't exist, we want to create it
+    const existingUser = await this.userRepository.findOne({
+      where: { national_id: user.national_id },
+    });
+    if (existingUser) {
+      throw new BadRequestException('User with this national_id already exists');
+    }
 
     const existingStudent = await this.studentRepository.findOne({
       where: { student_code: studentData.student_code },
