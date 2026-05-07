@@ -1,68 +1,81 @@
 # Future Platform - Backend
 
-This is the backend service for the **Student Information System (SIS)** built with [NestJS](https://nestjs.com/).
+This is the backend service for the **Student Information System (SIS)** built with [NestJS](https://nestjs.com/). It provides a robust API for managing academic data, user authentication, and grading logic.
+
+## Key Features
+
+- **RBAC (Role-Based Access Control)**: Secured endpoints for Students, Instructors, and Admins.
+- **Automated Grading**: Logic for calculating total marks, letter grades, and grade points.
+- **GPA Engine**: Real-time calculation of Semester GPA and Cumulative GPA (CGPA).
+- **Rate Limiting**: Integrated throttler to prevent API abuse.
+- **Transaction Safety**: Atomic operations for complex data creation (e.g., creating a student with a linked user).
 
 ## Prerequisites
 
-- Node.js (v18 or higher recommended)
-- npm
-- PostgreSQL
+- **Node.js**: v18 or higher
+- **Package Manager**: npm
+- **Database**: PostgreSQL
 
-## Installation
+## Installation & Setup
 
-```bash
-$ npm install
-```
+1. **Install Dependencies**:
+   ```bash
+   $ npm install
+   ```
 
-## Configuration
+2. **Environment Configuration**:
+   Create a `.env` file in the `backend` directory:
+   ```env
+   # Database Configuration
+   ## Localhost
+   DB_HOST=localhost
+   DB_PORT=5432
+   DB_USERNAME=postgres
+   DB_PASSWORD=your_db_password
+   DB_NAME=future-platform-db
 
-Ensure you have a `.env` file in the root of the `backend` directory. Sample `.env` configuration:
+   ## OR
+   
+   DATABASE_URL="URL_HERE"
 
-```env
-# DB
-DB_HOST=localhost
-DB_PORT=5432
-DB_USERNAME=postgres
-DB_PASSWORD=your_db_password
-DB_NAME=future-platform-db
+   # JWT Security
+   JWT_SECRET=your_jwt_secret
+   JWT_EXPIRES_IN=1d
+   ```
 
-# JWT
-JWT_SECRET=your_jwt_secret
-JWT_EXPIRES_IN=1d
-```
+3. **Run the Application**:
+   ```bash
+   # Development mode
+   $ npm run start:dev
 
-## Running the application
+   # Production mode
+   $ npm run start:prod
+   ```
 
-```bash
-# development
-$ npm run start
+## Module Architecture
 
-# watch mode
-$ npm run start:dev
+The backend is organized into domain-driven modules:
 
-# production mode
-$ npm run start:prod
-```
-
-## API Modules Overview
-
-The backend is organized systematically into the following main modules:
-- **`users`**: Authentication, authorization, and base user entity management (includes password setup flows).
-- **`students`**: Student profiles, academic data handling.
-- **`instructors`**: Instructor details and management.
-- **`courses`**: Course catalog, creation, and details.
-- **`assign-course`**: Functionality for assigning courses to instructors.
-- **`enrollments`**: Student course registration, progress tracking, and grading.
+- **`users`**: Handles authentication, profile management, and the "First Login" password setup flow.
+- **`students`**: Manages student-specific data, levels, departments, and academic dashboards.
+- **`instructors`**: Management of instructor profiles and course assignments.
+- **`courses`**: The academic catalog, including credit hours and course metadata.
+- **`enrollments`**: Manages the relationship between students and courses, tracking progress (In Progress, Passed, Failed).
+- **`grades`**: The core logic for marks entry, grade finalization, and GPA calculations.
+- **`assign-course`**: Administrative tool for linking instructors to specific course offerings.
 
 ## Testing
 
 ```bash
-# unit tests
+# Unit tests
 $ npm run test
 
-# e2e tests
+# E2E tests
 $ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
 ```
+
+## Deployment
+
+The project includes configurations for multiple cloud providers:
+- `railway.toml`: For [Railway](https://railway.app/)
+- `Dockerfile`: Standardized containerization for any Docker-compatible environment.
