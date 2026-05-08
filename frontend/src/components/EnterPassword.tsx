@@ -1,68 +1,68 @@
 import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { GraduationCap, ArrowRight, Moon, Sun, Loader2 } from 'lucide-react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { GraduationCap, ArrowRight, Moon, Sun, Lock, Loader2 } from 'lucide-react';
 
 const API_BASE = 'https://future-platform-production.up.railway.app';
 
-interface InitLoginResponse {
-  requiresPasswordSetup: boolean;
-  accessToken: string;
-}
-
-export default function LoginPage() {
-  const [nationalId, setNationalId] = useState('');
+export default function EnterPassword() {
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const location = useLocation();
+  
+  const nationalId = location.state?.nationalId || '';
+  const accessToken = location.state?.accessToken || '';
+
+  if (!nationalId || !accessToken) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-primary-700/10 to-primary-400/20 flex items-center justify-center p-4">
+        <div className="text-center">
+          <p className="text-gray-600 mb-4">Invalid access. Please login first.</p>
+          <Link to="/login" className="text-primary-700 font-semibold hover:underline">
+            Go to Login
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!nationalId.trim()) {
-      setError('Please enter your National ID');
+    setError('');
+
+    if (!password) {
+      setError('Please enter your password');
       return;
     }
 
     setLoading(true);
-    setError('');
 
     try {
-      console.log('Sending request to:', `${API_BASE}/api/users/auth/init-login`);
-      console.log('Request body:', JSON.stringify({ nationalId }));
-      
-      const response = await fetch(`${API_BASE}/api/users/auth/init-login`, {
+      const response = await fetch(`${API_BASE}/api/users/auth/login`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nationalId }),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({ 
+          nationalId,
+          password 
+        }),
       });
 
-      console.log('Response status:', response.status);
-      console.log('Response ok:', response.ok);
+      const data = await response.json();
 
-      const data: InitLoginResponse = await response.json();
-      console.log('Response data:', data);
-
-      if (data.requiresPasswordSetup) {
-        navigate('/set-password', { 
-          state: { 
-            nationalId, 
-            accessToken: data.accessToken 
-          } 
-        });
-      } else {
-        navigate('/enter-password', { 
-          state: { 
-            nationalId, 
-            accessToken: data.accessToken 
-          } 
-        });
+      if (!response.ok) {
+        setError(data.message || 'Invalid password. Please try again.');
+        return;
       }
-    } catch (err: unknown) {
+
+      navigate('/dashboard');
+    } catch (err) {
       console.error('Login error:', err);
-      if (err instanceof TypeError && err.message.includes('Failed to fetch')) {
-        setError('Cannot connect to server. Please check your connection.');
-      } else {
-        setError('Something went wrong. Please try again.');
-      }
+      setError('Unable to connect. Please check your internet connection and try again.');
     } finally {
       setLoading(false);
     }
@@ -83,20 +83,47 @@ export default function LoginPage() {
               HICIT
             </h1>
             <h2 className="text-4xl font-bold text-gray-900 dark:text-gray-100 mb-4">Welcome Back</h2>
-            <p className="text-gray-600 dark:text-gray-400 text-lg">Enter your credentials to access your academic gallery.</p>
+            <p className="text-gray-600 dark:text-gray-400 text-lg">Enter your password to access your account.</p>
           </div>
 
           <form className="space-y-6" onSubmit={handleSubmit}>
             <div>
-              <label className="block text-[11px] font-bold text-gray-500 dark:text-gray-400 tracking-widest uppercase mb-2">National ID</label>
+              <label className="block text-[11px] font-bold text-gray-500 dark:text-gray-400 tracking-widest uppercase mb-2">
+                National ID
+              </label>
               <div className="relative">
                 <input
-                  className="w-full pl-12 pr-4 py-4 bg-gray-50/50 dark:bg-slate-700/50 border-none rounded-xl focus:ring-2 focus:ring-primary text-gray-800 dark:text-white font-medium"
+                  className="w-full pl-12 pr-4 py-4 bg-gray-50/50 dark:bg-slate-700/50 border-none rounded-xl text-gray-800 dark:text-white font-medium"
                   type="text"
                   value={nationalId}
-                  onChange={(e) => setNationalId(e.target.value)}
+                  disabled
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-[11px] font-bold text-gray-500 dark:text-gray-400 tracking-widest uppercase mb-2">
+                Password
+              </label>
+              <div className="relative">
+                <span className="absolute inset-y-0 left-4 flex items-center text-gray-400">
+                  <Lock size={20} />
+                </span>
+                <input
+                  className="w-full pl-12 pr-12 py-4 bg-gray-50/50 dark:bg-slate-700/50 border-none rounded-xl focus:ring-2 focus:ring-primary text-gray-800 dark:text-white font-medium"
+                  type={showPassword ? 'text' : 'password'}
+                  placeholder="Enter your password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   disabled={loading}
                 />
+                <button
+                  type="button"
+                  className="absolute inset-y-0 right-4 flex items-center text-gray-400 hover:text-gray-600"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? <span className="material-symbols-outlined">visibility_off</span> : <span className="material-symbols-outlined">visibility</span>}
+                </button>
               </div>
             </div>
 
@@ -141,9 +168,10 @@ export default function LoginPage() {
           </form>
 
           <div className="mt-12 text-center">
-            <p className="text-sm text-gray-600 dark:text-gray-400">
-              New to the institution? <a className="text-brand-blue dark:text-blue-400 font-bold hover:underline" href="#">Request enrollment access</a>
-            </p>
+            <Link className="inline-flex items-center text-sm font-semibold text-gray-600 dark:text-gray-400 hover:text-gray-900" to="/login">
+              <ArrowRight className="mr-2 rotate-180" size={16} />
+              Back to Login
+            </Link>
           </div>
         </div>
 

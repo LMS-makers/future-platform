@@ -1,14 +1,81 @@
 import { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { Lock, History, Eye, EyeOff, ArrowLeft, GraduationCap, Info } from 'lucide-react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Lock, History, Eye, EyeOff, ArrowLeft, GraduationCap, Info, Loader2 } from 'lucide-react';
+
+const API_BASE = 'https://future-platform-production.up.railway.app';
 
 export default function SetPassword() {
-  const [newPassword, setNewPassword] = useState('........');
-  const [confirmPassword, setConfirmPassword] = useState('........');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
   const location = useLocation();
+  
   const nationalId = location.state?.nationalId || '';
+  const accessToken = location.state?.accessToken || '';
+
+  if (!nationalId || !accessToken) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-primary-700/10 to-primary-400/20 flex items-center justify-center p-4">
+        <div className="text-center">
+          <p className="text-gray-600 mb-4">Invalid access. Please login first.</p>
+          <Link to="/login" className="text-primary-700 font-semibold hover:underline">
+            Go to Login
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+
+    if (!newPassword) {
+      setError('Please enter a password');
+      return;
+    }
+
+    if (newPassword.length < 8) {
+      setError('Password must be at least 8 characters long');
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      setError('Passwords do not match');
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const response = await fetch(`${API_BASE}/api/users/auth/set-password`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({ nationalId, password: newPassword }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data.message || 'Failed to set password. Please try again.');
+        return;
+      }
+
+      navigate('/dashboard');
+    } catch (err) {
+      console.error('Set password error:', err);
+      setError('Unable to connect. Please check your internet connection and try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-700/10 to-primary-400/20 flex flex-col items-center justify-center relative overflow-hidden overflow-x-hidden">
@@ -29,11 +96,11 @@ export default function SetPassword() {
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold text-gray-900 mb-3">Set Password</h2>
             <p className="text-gray-600 text-sm leading-relaxed px-4">
-              {nationalId ? `Welcome, ${nationalId}. Please set your password to secure your account.` : 'Please set your password to secure your account.'}
+              Welcome, {nationalId}. Please set your password to secure your account.
             </p>
           </div>
 
-          <form className="space-y-5" onSubmit={(e) => e.preventDefault()}>
+          <form className="space-y-5" onSubmit={handleSubmit}>
             <div>
               <label className="block text-sm font-semibold text-gray-800 mb-2" htmlFor="new-password">
                 New Password
@@ -43,14 +110,14 @@ export default function SetPassword() {
                   <Lock size={16} />
                 </div>
                 <input
-                  className="block w-full pl-10 pr-10 py-3 bg-white/90 border border-transparent rounded-xl text-gray-900 focus:ring-2 focus:ring-[#3b5998] focus:border-transparent sm:text-lg tracking-[0.3em] font-black placeholder-gray-400"
+                  className="block w-full pl-10 pr-10 py-3 bg-white/90 border border-transparent rounded-xl text-gray-900 focus:ring-2 focus:ring-[#3b5998] focus:border-transparent sm:text-lg font-medium"
                   id="new-password"
                   name="new-password"
                   type={showNewPassword ? 'text' : 'password'}
-                  placeholder="........"
+                  placeholder="Enter password"
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
-                  required
+                  disabled={loading}
                 />
                 <button
                   type="button"
@@ -71,14 +138,14 @@ export default function SetPassword() {
                   <History size={16} />
                 </div>
                 <input
-                  className="block w-full pl-10 pr-10 py-3 bg-white/90 border border-transparent rounded-xl text-gray-900 focus:ring-2 focus:ring-[#3b5998] focus:border-transparent sm:text-lg tracking-[0.3em] font-black placeholder-gray-400"
+                  className="block w-full pl-10 pr-10 py-3 bg-white/90 border border-transparent rounded-xl text-gray-900 focus:ring-2 focus:ring-[#3b5998] focus:border-transparent sm:text-lg font-medium"
                   id="confirm-password"
                   name="confirm-password"
                   type={showConfirmPassword ? 'text' : 'password'}
-                  placeholder="........"
+                  placeholder="Confirm password"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  required
+                  disabled={loading}
                 />
                 <button
                   type="button"
@@ -89,6 +156,12 @@ export default function SetPassword() {
                 </button>
               </div>
             </div>
+
+            {error && (
+              <div className="text-red-600 text-sm font-medium bg-red-50 dark:bg-red-900/20 px-4 py-2 rounded-lg">
+                {error}
+              </div>
+            )}
 
             <div className="bg-white/95 rounded-xl p-5 mt-6 border border-white/50 shadow-sm">
               <div className="flex items-start">
@@ -108,10 +181,17 @@ export default function SetPassword() {
             <div className="pt-2 mt-6">
               <button
                 type="submit"
-                className="w-full flex justify-center items-center py-3.5 px-4 border border-transparent rounded-xl shadow-md text-base font-semibold text-white bg-[#4262a8] hover:bg-[#344d85] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#4262a8] transition-colors duration-200"
+                disabled={loading}
+                className="w-full flex justify-center items-center py-3.5 px-4 border border-transparent rounded-xl shadow-md text-base font-semibold text-white bg-[#4262a8] hover:bg-[#344d85] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#4262a8] transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Set Password
-                <ArrowLeft className="ml-2 text-sm rotate-180" size={16} />
+                {loading ? (
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                ) : (
+                  <>
+                    Set Password
+                    <ArrowLeft className="ml-2 text-sm rotate-180" size={16} />
+                  </>
+                )}
               </button>
             </div>
           </form>
