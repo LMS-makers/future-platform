@@ -1,13 +1,13 @@
 import { forwardRef, Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { Course } from "./entities/course.entity";
-import { UsersModule } from "src/users/users.module";
+import { UsersModule } from "../users/users.module";
 import { JwtModule } from "@nestjs/jwt";
 import { CoursesController } from "./courses.controller";
 import { CoursesService } from "./courses.service";
 import { CoursePrerequisite } from "./entities/course-prerequisite.entity";
-import { AssignCourseModule } from "src/assign-course/assign.module";
-import { EnrollmentsModule } from "src/enrollments/enrollments.module";
+import { AssignCourseModule } from "../assign-course/assign.module";
+import { EnrollmentsModule } from "../enrollments/enrollments.module";
 
 @Module({
     imports: [

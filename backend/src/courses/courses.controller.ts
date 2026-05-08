@@ -2,27 +2,31 @@ import { Controller, Post, Body, UseGuards, Param, Get, Put, Patch } from "@nest
 import { CoursesService } from "./courses.service";
 import { CreateCourseDto } from "./dtos/create-course.dto";
 import { UpdateCourseDto } from "./dtos/update-course.dto";
-import { AuthRolesGuard } from "src/users/guards/auth-role.guard";
-import { Roles } from "src/users/decorators/user-role.decorator";
-import { Role } from "utils/enum";
-import { CurrentUser } from "src/users/decorators/current-user.decorator";
-import * as type from 'utils/type';
+import { AuthRolesGuard } from "../users/guards/auth-role.guard";
+import { Roles } from "../users/decorators/user-role.decorator";
+import { Role } from "../../utils/enum";
+import { CurrentUser } from "../users/decorators/current-user.decorator";
+import * as type from '../../utils/type';
 import { AddPrerequisiteDto } from "./dtos/add-prerequisite.dto";
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 
+@ApiTags('Courses')
 @Controller('api/courses')
 export class CoursesController {
     constructor(private readonly coursesService: CoursesService) { }
 
-    // GET: ~/api/courses/count
     @Get('count')
+    @ApiOperation({ summary: 'Get total number of courses' })
     async getNumberOfCourses() {
         return this.coursesService.getNumberOfCourses();
     }
 
-    // POST: ~/api/courses
     @Post()
     @UseGuards(AuthRolesGuard)
     @Roles(Role.ADMIN)
+    @ApiBearerAuth()
+    @ApiOperation({ summary: 'Create a new course (Admin only)' })
+    @ApiResponse({ status: 201, description: 'Course successfully created' })
     create(
         @Body() createCourseDto: CreateCourseDto,
         @CurrentUser() user: type.JWTPayloadType
@@ -30,10 +34,11 @@ export class CoursesController {
         return this.coursesService.createCourse(createCourseDto, user.sub);
     }
 
-    // POST: ~/api/courses/:course_id/prerequisite
     @Post(':course_id/prerequisite')
     @UseGuards(AuthRolesGuard)
     @Roles(Role.ADMIN)
+    @ApiBearerAuth()
+    @ApiOperation({ summary: 'Add a prerequisite to a course (Admin only)' })
     addPrerequisite(
         @Param('course_id') course_id: string,
         @Body() prerequisiteId: AddPrerequisiteDto,
@@ -42,26 +47,29 @@ export class CoursesController {
         return this.coursesService.addPrerequisite(course_id, prerequisiteId, user.sub);
     }
 
-    // GET: ~/api/courses
     @Get()
     @UseGuards(AuthRolesGuard)
     @Roles(Role.ADMIN)
+    @ApiBearerAuth()
+    @ApiOperation({ summary: 'Get all courses (Admin only)' })
     async getAllCourses() {
         return this.coursesService.getAllCourses();
     }
 
-    // GET: ~/api/courses/:course_id
     @Get(':course_id')
     @UseGuards(AuthRolesGuard)
     @Roles(Role.ADMIN)
+    @ApiBearerAuth()
+    @ApiOperation({ summary: 'Get course by ID (Admin only)' })
     async getCourse(@Param('course_id') course_id: string) {
         return this.coursesService.getCourse(course_id);
     }
 
-    // PATCH: ~/api/courses/:course_id
     @Patch(':course_id')
     @UseGuards(AuthRolesGuard)
     @Roles(Role.ADMIN)
+    @ApiBearerAuth()
+    @ApiOperation({ summary: 'Update a course (Admin only)' })
     async updateCourse(
         @Param('course_id') course_id: string,
         @Body() updateCourseDto: UpdateCourseDto,

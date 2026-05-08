@@ -2,12 +2,12 @@ import { Injectable, NotFoundException, BadRequestException } from "@nestjs/comm
 import { InjectRepository } from "@nestjs/typeorm";
 import { Enrollment } from "./entities/enrollment.entity";
 import { Repository, In } from "typeorm";
-import { EnrollmentStatus, Role } from "utils/enum";
-import { CoursesService } from "src/courses/courses.service";
-import { StudentsService } from "src/students/students.service";
+import { EnrollmentStatus, Role } from "../../utils/enum";
+import { CoursesService } from "../courses/courses.service";
+import { StudentsService } from "../students/students.service";
 import { CreateEnrollmentDto } from "./dtos/create-enrollment.dto";
-import { UsersService } from "src/users/users.service";
-import { GradesService } from "src/grades/grades.service";
+import { UsersService } from "../users/users.service";
+import { GradesService } from "../grades/grades.service";
 
 @Injectable()
 export class EnrollmentService {
@@ -28,14 +28,14 @@ export class EnrollmentService {
      */
     public async createEnrollment(dto: CreateEnrollmentDto, admin_id: string) {
         await this.usersService.checkValidation(admin_id, Role.ADMIN);
-        const { studentId, courseId, year, semester } = dto;
+        const { student_code, course_code, year, semester } = dto;
 
-        const student = await this.studentService.getStudentById(studentId);
-        const course = await this.courseService.getCourse(courseId);
-        const completedCourses = await this.studentService.getStudentCompletedCourses(studentId);
+        const student = await this.studentService.getStudentByCode(student_code);
+        const course = await this.courseService.getCourseByCode(course_code);
+        const completedCourses = await this.studentService.getStudentCompletedCourses(student.id);
 
         // check if student has met the minimum credit hours requirement
-        if (course.data.course.min_gpa >= student.gpa) {
+        if (course.data.course.min_gpa > student.gpa) {
             throw new BadRequestException(`Student has not met the minimum gpa requirement. Required: ${course.data.course.min_gpa}, Found: ${student.gpa}`);
         }
 

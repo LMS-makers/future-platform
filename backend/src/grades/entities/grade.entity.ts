@@ -1,6 +1,6 @@
-import { Enrollment } from "src/enrollments/entities/enrollment.entity";
+import { Enrollment } from "../../enrollments/entities/enrollment.entity";
 import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "typeorm";
-import { Grade as GradeEnum } from "utils/enum";
+import { Grade as GradeEnum } from "../../../utils/enum";
 
 
 @Entity('grades')

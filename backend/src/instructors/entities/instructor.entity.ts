@@ -1,8 +1,7 @@
 import { Entity, Column, OneToOne, JoinColumn, PrimaryColumn, OneToMany, ManyToMany } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
-import { Department, InstructorDegree, InstructorRank } from 'utils/enum';
-import { Course } from 'src/courses/entities/course.entity';
-import { InstructorCourse } from 'src/assign-course/entities/assign-course.entity';
+import { Department, InstructorDegree, InstructorRank } from '../../../utils/enum';
+import { InstructorCourse } from '../../assign-course/entities/assign-course.entity';
 
 @Entity({ name: 'instructors' })
 export class Instructor {

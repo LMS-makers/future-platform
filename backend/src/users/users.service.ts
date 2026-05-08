@@ -9,7 +9,7 @@ import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { User } from './entities/user.entity';
 import { CreateUserDto } from './dtos/create-user.dto';
-import { Role } from 'utils/enum';
+import { Role } from '../../utils/enum';
 import { UpdateUserDto } from './dtos/update-user.dto';
 
 @Injectable()

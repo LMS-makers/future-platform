@@ -2,11 +2,11 @@ import { BadRequestException, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { InstructorCourse } from "./entities/assign-course.entity";
 import { Repository } from "typeorm";
-import { Role } from "utils/enum";
-import { UsersService } from "src/users/users.service";
+import { Role } from "../../utils/enum";
+import { UsersService } from "../users/users.service";
 import { AssignCourseDto } from "./dtos/assign-course.dto";
-import { InstructorService } from "src/instructors/instructor.service";
-import { CoursesService } from "src/courses/courses.service";
+import { InstructorService } from "../instructors/instructor.service";
+import { CoursesService } from "../courses/courses.service";
 
 @Injectable()
 export class AssignCourseService {

@@ -9,10 +9,10 @@ import {
   Index,
   OneToOne,
 } from 'typeorm';
-import { Student } from 'src/students/entities/student.entity';
-import { Course } from 'src/courses/entities/course.entity';
-import { EnrollmentStatus, Semester } from 'utils/enum';
-import { Grade } from 'src/grades/entities/grade.entity';
+import { Student } from '../../students/entities/student.entity';
+import { Course } from '../../courses/entities/course.entity';
+import { EnrollmentStatus, Semester } from '../../../utils/enum';
+import { Grade } from '../../grades/entities/grade.entity';
 
 @Entity('enrollments')
 @Unique(['student', 'course', 'year', 'semester'])

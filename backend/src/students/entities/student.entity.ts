@@ -1,7 +1,7 @@
 import { Entity, Column, OneToOne, JoinColumn, PrimaryColumn, OneToMany } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
-import { Department, HighSchoolType, Level, Semester } from 'utils/enum';
-import { Enrollment } from 'src/enrollments/entities/enrollment.entity';
+import { Department, HighSchoolType, Level, Semester } from '../../../utils/enum';
+import { Enrollment } from '../../enrollments/entities/enrollment.entity';
 
 @Entity({ name: 'students' })
 export class Student {

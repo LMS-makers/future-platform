@@ -2,9 +2,9 @@ import { BadRequestException, Injectable, NotFoundException } from "@nestjs/comm
 import { InjectRepository } from "@nestjs/typeorm";
 import { Course } from "./entities/course.entity";
 import { Repository } from "typeorm";
-import { UsersService } from "src/users/users.service";
+import { UsersService } from "../users/users.service";
 import { CreateCourseDto } from "./dtos/create-course.dto";
-import { Role } from "utils/enum";
+import { Role } from "../../utils/enum";
 import { UpdateCourseDto } from "./dtos/update-course.dto";
 import { CoursePrerequisite } from "./entities/course-prerequisite.entity";
 import { AddPrerequisiteDto } from "./dtos/add-prerequisite.dto";
@@ -79,6 +79,24 @@ export class CoursesService {
     public async getCourse(courseId: string): Promise<{ message: string, data: { course: Course } }> {
         const course = await this.courseRepository.findOne({
             where: { id: courseId },
+            relations: ['prerequisites', 'prerequisites.prerequisite'],
+        });
+
+        if (!course) {
+            throw new NotFoundException('Course not found');
+        }
+
+        return {
+            message: 'Course fetched successfully',
+            data: {
+                course,
+            },
+        };
+    }
+
+    public async getCourseByCode(course_code: string): Promise<{ message: string, data: { course: Course } }> {
+        const course = await this.courseRepository.findOne({
+            where: { course_code },
             relations: ['prerequisites', 'prerequisites.prerequisite'],
         });
 
