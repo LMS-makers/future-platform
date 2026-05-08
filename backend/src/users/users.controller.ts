@@ -23,7 +23,9 @@ import { Role } from '../../utils/enum';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { InitLoginDto } from './dtos/init-login.dto';
 import { SetPasswordDto } from './dtos/set-password.dto';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Users')
 @Controller('api/users')
 export class UsersController {
   constructor(
@@ -35,6 +37,9 @@ export class UsersController {
   @Post('auth/register')
   @UseGuards(AuthRolesGuard)
   @Roles(Role.ADMIN)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Register a new user (Admin only)' })
+  @ApiResponse({ status: 201, description: 'User successfully registered' })
   register(@Body() createUserDto: CreateUserDto) {
     return this.authService.register(createUserDto);
   }
@@ -42,12 +47,15 @@ export class UsersController {
   // POST: ~/api/users/auth/login
   @Post('auth/login')
   @HttpCode(200)
+  @ApiOperation({ summary: 'User login' })
+  @ApiResponse({ status: 200, description: 'User successfully logged in' })
   login(@Body() loginDto: LoginDto) {
     return this.authService.login(loginDto);
   }
 
   // POST: ~/api/users/auth/init-login
   @Post('auth/init-login')
+  @ApiOperation({ summary: 'Initial login check for password setup' })
   initLogin(@Body() initLoginDto: InitLoginDto) {
     return this.authService.initLogin(initLoginDto);
   }
@@ -55,6 +63,8 @@ export class UsersController {
   // POST: ~/api/users/auth/set-password
   @Post('auth/set-password')
   @UseGuards(AuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Set user password after initial login' })
   setPassword(
     @Body() setPasswordDto: SetPasswordDto,
     @CurrentUser() user: type.JWTPayloadType,
@@ -65,6 +75,8 @@ export class UsersController {
   // GET: ~/api/users/me
   @Get('me')
   @UseGuards(AuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get current user profile' })
   me(@CurrentUser() user: type.JWTPayloadType) {
     return this.usersService.getCurrentUser(user.sub);
   }
@@ -73,6 +85,8 @@ export class UsersController {
   @Delete('delete/:id')
   @UseGuards(AuthGuard, AuthRolesGuard)
   @Roles(Role.ADMIN)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Delete a user (Admin only)' })
   deleteUser(
     @Param('id') id: string,
     @CurrentUser() user: type.JWTPayloadType,
@@ -84,6 +98,8 @@ export class UsersController {
   @Patch('update/:id')
   @UseGuards(AuthGuard, AuthRolesGuard)
   @Roles(Role.ADMIN)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Update a user (Admin only)' })
   updateUser(
     @Param('id') id: string,
     @Body() updateUserDto: UpdateUserDto,
@@ -96,6 +112,8 @@ export class UsersController {
   @Post('add')
   @UseGuards(AuthGuard, AuthRolesGuard)
   @Roles(Role.ADMIN)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Add a new user (Admin only)' })
   addUser(
     @Body() createUserDto: CreateUserDto,
     @CurrentUser() user: type.JWTPayloadType,
@@ -105,6 +123,7 @@ export class UsersController {
 
   // GET: ~/api/users/count
   @Get('count')
+  @ApiOperation({ summary: 'Get total number of users' })
   async getNumberOfUsers() {
     return this.usersService.getNumberOfUsers();
   }
