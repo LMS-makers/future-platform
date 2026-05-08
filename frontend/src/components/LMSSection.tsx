@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import { ArrowRight, BookOpen, Calendar, BarChart } from 'lucide-react';
 
 export default function LMSSection() {
@@ -36,10 +37,10 @@ export default function LMSSection() {
               ))}
             </div>
 
-            <button className="group bg-primary-700 hover:bg-primary-600 text-white px-8 py-4 rounded-xl transition-all duration-300 font-semibold hover:shadow-lg hover:shadow-primary-700/30 flex items-center gap-2">
-              Access LMS
+            <Link to="/login" className="group bg-primary-700 hover:bg-primary-600 text-white px-8 py-4 rounded-xl transition-all duration-300 font-semibold hover:shadow-lg hover:shadow-primary-700/30 flex items-center gap-2 inline-flex">
+              Login to LMS
               <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
-            </button>
+            </Link>
           </motion.div>
 
           <motion.div

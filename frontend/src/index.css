@@ -4,6 +4,13 @@
 @theme {
   --font-family-sans: 'Inter', sans-serif;
 
+  --color-primary: #1A367F;
+  --color-brand-blue: #0A2472;
+  --color-lavender-bg: #C7D2FE;
+  --color-dark-indigo: #3C3D60;
+  --color-background-light: #E0F2FE;
+  --color-background-dark: #0F172A;
+
   --color-primary-900: #0A287C;
   --color-primary-800: #190E58;
   --color-primary-700: #355DD4;
@@ -28,8 +35,15 @@
 
 html {
   scroll-behavior: smooth;
+  overflow-x: hidden;
 }
 
 body {
   font-family: 'Inter', sans-serif;
+  overflow-x: hidden;
+}
+
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 20;
+  font-size: 20px;
 }
