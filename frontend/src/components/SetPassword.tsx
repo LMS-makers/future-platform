@@ -1,23 +1,90 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Lock, History, Eye, EyeOff, ArrowLeft, GraduationCap, Info } from 'lucide-react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Lock, History, Eye, EyeOff, ArrowLeft, GraduationCap, Info, Loader2 } from 'lucide-react';
 
-export default function ResetPassword() {
-  const [newPassword, setNewPassword] = useState('........');
-  const [confirmPassword, setConfirmPassword] = useState('........');
+const API_BASE = 'https://future-platform-production.up.railway.app';
+
+export default function SetPassword() {
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
+  const location = useLocation();
+  
+  const nationalId = location.state?.nationalId || '';
+  const accessToken = location.state?.accessToken || '';
+
+  if (!nationalId || !accessToken) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-primary-700/10 to-primary-400/20 flex items-center justify-center p-4">
+        <div className="text-center">
+          <p className="text-gray-600 mb-4">Invalid access. Please login first.</p>
+          <Link to="/login" className="text-primary-700 font-semibold hover:underline">
+            Go to Login
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+
+    if (!newPassword) {
+      setError('Please enter a password');
+      return;
+    }
+
+    if (newPassword.length < 8) {
+      setError('Password must be at least 8 characters long');
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      setError('Passwords do not match');
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const response = await fetch(`${API_BASE}/api/users/auth/set-password`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({ nationalId, password: newPassword }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data.message || 'Failed to set password. Please try again.');
+        return;
+      }
+
+      navigate('/dashboard');
+    } catch (err) {
+      console.error('Set password error:', err);
+      setError('Unable to connect. Please check your internet connection and try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-700/10 to-primary-400/20 flex flex-col items-center justify-center relative overflow-hidden overflow-x-hidden">
-      {/* Background decorative elements */}
       <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
         <div className="absolute top-0 left-[-10%] w-[80%] h-[120%] bg-primary-50 opacity-40 rounded-full blur-3xl transform rotate-12"></div>
         <div className="absolute bottom-0 right-[-10%] w-[60%] h-[100%] bg-neutral-300 opacity-50 transform -rotate-12 translate-y-1/4 translate-x-1/4 rounded-tl-[100px]"></div>
       </div>
 
       <main className="relative z-10 w-full max-w-md px-4 sm:px-6 flex flex-col items-center">
-        {/* Header Logo */}
         <div className="mb-8 flex flex-col items-center">
           <div className="w-16 h-16 bg-[#3b5998] rounded-2xl flex items-center justify-center mb-4 shadow-lg">
             <GraduationCap className="text-white" size={32} />
@@ -25,19 +92,15 @@ export default function ResetPassword() {
           <h1 className="text-4xl font-extrabold text-[#1a56db] tracking-wide">HICIT</h1>
         </div>
 
-        {/* Reset Password Card */}
         <div className="bg-[#c4d0ec] rounded-3xl w-full p-8 shadow-xl border border-white/20">
-          {/* Card Header */}
           <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold text-gray-900 mb-3">Reset Password</h2>
+            <h2 className="text-3xl font-bold text-gray-900 mb-3">Set Password</h2>
             <p className="text-gray-600 text-sm leading-relaxed px-4">
-              Please enter and confirm your new password below to secure your account.
+              Welcome, {nationalId}. Please set your password to secure your account.
             </p>
           </div>
 
-          {/* Form */}
-          <form className="space-y-5" onSubmit={(e) => e.preventDefault()}>
-            {/* New Password Field */}
+          <form className="space-y-5" onSubmit={handleSubmit}>
             <div>
               <label className="block text-sm font-semibold text-gray-800 mb-2" htmlFor="new-password">
                 New Password
@@ -47,14 +110,14 @@ export default function ResetPassword() {
                   <Lock size={16} />
                 </div>
                 <input
-                  className="block w-full pl-10 pr-10 py-3 bg-white/90 border border-transparent rounded-xl text-gray-900 focus:ring-2 focus:ring-[#3b5998] focus:border-transparent sm:text-lg tracking-[0.3em] font-black placeholder-gray-400"
+                  className="block w-full pl-10 pr-10 py-3 bg-white/90 border border-transparent rounded-xl text-gray-900 focus:ring-2 focus:ring-[#3b5998] focus:border-transparent sm:text-lg font-medium"
                   id="new-password"
                   name="new-password"
                   type={showNewPassword ? 'text' : 'password'}
-                  placeholder="........"
+                  placeholder="Enter password"
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
-                  required
+                  disabled={loading}
                 />
                 <button
                   type="button"
@@ -66,7 +129,6 @@ export default function ResetPassword() {
               </div>
             </div>
 
-            {/* Confirm New Password Field */}
             <div>
               <label className="block text-sm font-semibold text-gray-800 mb-2" htmlFor="confirm-password">
                 Confirm New Password
@@ -76,14 +138,14 @@ export default function ResetPassword() {
                   <History size={16} />
                 </div>
                 <input
-                  className="block w-full pl-10 pr-10 py-3 bg-white/90 border border-transparent rounded-xl text-gray-900 focus:ring-2 focus:ring-[#3b5998] focus:border-transparent sm:text-lg tracking-[0.3em] font-black placeholder-gray-400"
+                  className="block w-full pl-10 pr-10 py-3 bg-white/90 border border-transparent rounded-xl text-gray-900 focus:ring-2 focus:ring-[#3b5998] focus:border-transparent sm:text-lg font-medium"
                   id="confirm-password"
                   name="confirm-password"
                   type={showConfirmPassword ? 'text' : 'password'}
-                  placeholder="........"
+                  placeholder="Confirm password"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  required
+                  disabled={loading}
                 />
                 <button
                   type="button"
@@ -95,14 +157,19 @@ export default function ResetPassword() {
               </div>
             </div>
 
-            {/* Password Requirements Info Box */}
+            {error && (
+              <div className="text-red-600 text-sm font-medium bg-red-50 dark:bg-red-900/20 px-4 py-2 rounded-lg">
+                {error}
+              </div>
+            )}
+
             <div className="bg-white/95 rounded-xl p-5 mt-6 border border-white/50 shadow-sm">
               <div className="flex items-start">
                 <div className="flex-shrink-0 mt-0.5">
                   <Info className="text-gray-500" size={16} />
                 </div>
                 <div className="ml-3">
-                  <h3 className="text-sm font-bold text-gray-800 mb-2">Password equirements:</h3>
+                  <h3 className="text-sm font-bold text-gray-800 mb-2">Password requirements:</h3>
                   <ul className="text-sm text-gray-600 space-y-1 font-medium list-none">
                     <li>Must be at least 8 characters long.</li>
                     <li>Must include at least one uppercase letter and one symbol.</li>
@@ -111,20 +178,25 @@ export default function ResetPassword() {
               </div>
             </div>
 
-            {/* Submit Button */}
             <div className="pt-2 mt-6">
               <button
                 type="submit"
-                className="w-full flex justify-center items-center py-3.5 px-4 border border-transparent rounded-xl shadow-md text-base font-semibold text-white bg-[#4262a8] hover:bg-[#344d85] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#4262a8] transition-colors duration-200"
+                disabled={loading}
+                className="w-full flex justify-center items-center py-3.5 px-4 border border-transparent rounded-xl shadow-md text-base font-semibold text-white bg-[#4262a8] hover:bg-[#344d85] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#4262a8] transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Reset Password
-                <ArrowLeft className="ml-2 text-sm rotate-180" size={16} />
+                {loading ? (
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                ) : (
+                  <>
+                    Set Password
+                    <ArrowLeft className="ml-2 text-sm rotate-180" size={16} />
+                  </>
+                )}
               </button>
             </div>
           </form>
         </div>
 
-        {/* Back to Login */}
         <div className="mt-8 text-center">
           <Link className="inline-flex items-center text-sm font-semibold text-gray-600 hover:text-gray-900 transition-colors" to="/login">
             <ArrowLeft className="mr-2" size={16} />

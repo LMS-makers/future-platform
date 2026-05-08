@@ -1,4 +1,5 @@
 import { useCallback } from "react";
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import {
@@ -58,13 +59,13 @@ export default function Hero() {
 						</p>
 
 						<div className="flex flex-col sm:flex-row gap-4">
-							<button className="group bg-primary-700 hover:bg-primary-600 text-white px-8 py-4 rounded-xl transition-all duration-300 font-semibold text-base hover:shadow-lg hover:shadow-primary-700/30 flex items-center justify-center gap-2">
+							<Link to="/login" className="group bg-primary-700 hover:bg-primary-600 text-white px-8 py-4 rounded-xl transition-all duration-300 font-semibold text-base hover:shadow-lg hover:shadow-primary-700/30 flex items-center justify-center gap-2 inline-block">
 								Apply Now
 								<ArrowRight
 									size={18}
 									className="group-hover:translate-x-1 transition-transform"
 								/>
-							</button>
+							</Link>
 							<button className="border border-white/20 text-white hover:border-primary-400 hover:text-primary-400 px-8 py-4 rounded-xl transition-all duration-300 font-semibold text-base">
 								Explore Programs
 							</button>

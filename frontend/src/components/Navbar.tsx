@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 
 const navLinks = [
@@ -47,10 +48,10 @@ export default function Navbar() {
           </div>
 
           <div className="hidden md:block">
-            <button className="bg-primary-700 hover:bg-primary-600 text-white px-5 py-2.5 rounded-lg transition-all duration-200 font-medium text-sm hover:shadow-lg hover:shadow-primary-700/30">
-              Login to LMS
-            </button>
-          </div>
+              <Link to="/login" className="bg-primary-700 hover:bg-primary-600 text-white px-5 py-2.5 rounded-lg transition-all duration-200 font-medium text-sm hover:shadow-lg hover:shadow-primary-700/30 inline-block">
+                Login to LMS
+              </Link>
+            </div>
 
           <button
             className="md:hidden text-white p-2"
@@ -75,9 +76,9 @@ export default function Navbar() {
                 {link.label}
               </a>
             ))}
-            <button className="w-full bg-primary-700 hover:bg-primary-600 text-white px-5 py-2.5 rounded-lg transition-all duration-200 font-medium text-sm mt-2">
+            <Link to="/login" className="w-full bg-primary-700 hover:bg-primary-600 text-white px-5 py-2.5 rounded-lg transition-all duration-200 font-medium text-sm mt-2 inline-block text-center">
               Login to LMS
-            </button>
+            </Link>
           </div>
         </div>
       )}
