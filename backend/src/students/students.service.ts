@@ -168,6 +168,25 @@ export class StudentsService {
   }
 
   /**
+   * Get student GPA and CGPA for student dashboard
+   * @param student_id
+   * @returns
+   */
+  public async getStudentGPAandCGPA(student_id: string) {
+    const student = await this.studentRepository.findOne({
+      where: { id: student_id },
+    });
+    if (!student) {
+      throw new NotFoundException('Student not found');
+    }
+    return {
+      cgpa: student.cgpa,
+      gpa: student.gpa,
+    };
+  }
+
+
+  /**
    * Get student dashboard
    * @param student_id
    * @returns {
@@ -199,12 +218,12 @@ export class StudentsService {
     return {
       message: 'Student dashboard fetched successfully',
       data: {
-        student:{
-          name:student.user.full_name,
-          code:student.student_code,
-          level:student.level,
-          semester:student.semester,
-          department:student.department,
+        student: {
+          name: student.user.full_name,
+          code: student.student_code,
+          level: student.level,
+          semester: student.semester,
+          department: student.department,
         },
         coursesStats: {
           totalCourses: student.enrollments.length,

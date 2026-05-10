@@ -14,7 +14,7 @@ import { ApiBearerAuth, ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@ne
 export class StudentsController {
   constructor(
     private readonly studentsService: StudentsService,
-  ) {}
+  ) { }
 
   @Get('count')
   @ApiOperation({ summary: 'Get total number of students' })
@@ -61,6 +61,14 @@ export class StudentsController {
   @ApiOperation({ summary: 'Get student by ID' })
   async getStudentById(@Param('id') id: string) {
     return this.studentsService.getStudentById(id);
+  }
+
+  @Get('dashboard/gpa')
+  @UseGuards(AuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get current student GPA and CGPA' })
+  async getStudentGPAandCGPA(@CurrentUser() payload: type.JWTPayloadType) {
+    return this.studentsService.getStudentGPAandCGPA(payload.sub);
   }
 
   @Get('code/:student_code')
