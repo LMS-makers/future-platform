@@ -1,8 +1,26 @@
 import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { GraduationCap, ArrowRight, Moon, Sun, Lock, Loader2 } from 'lucide-react';
+import { toast } from 'react-hot-toast';
+import { AxiosError } from 'axios';
+import { useAuthStore, getRedirectRoute } from '../store/authStore';
+import { storage } from '../utils/storage';
 
-const API_BASE = 'https://future-platform-production.up.railway.app';
+function getErrorMessage(error: unknown): string {
+  if (error instanceof AxiosError) {
+    if (error.response?.status === 404) {
+      return 'User not found. Please return to admin.';
+    }
+    if (error.response?.status === 401) {
+      return 'Invalid credentials. Please try again.';
+    }
+    return error.response?.data?.message || 'Something went wrong. Please try again.';
+  }
+  if (error instanceof Error) {
+    return error.message;
+  }
+  return 'Something went wrong. Please try again.';
+}
 
 export default function EnterPassword() {
   const [password, setPassword] = useState('');
@@ -11,9 +29,10 @@ export default function EnterPassword() {
   const [error, setError] = useState('');
   const navigate = useNavigate();
   const location = useLocation();
+  const { login } = useAuthStore();
   
-  const nationalId = location.state?.nationalId || '';
-  const accessToken = location.state?.accessToken || '';
+  const nationalId = location.state?.nationalId || storage.getTempNationalId() || '';
+  const accessToken = location.state?.accessToken || storage.getTempAccessToken() || '';
 
   if (!nationalId || !accessToken) {
     return (
@@ -40,29 +59,14 @@ export default function EnterPassword() {
     setLoading(true);
 
     try {
-      const response = await fetch(`${API_BASE}/api/users/auth/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${accessToken}`,
-        },
-        body: JSON.stringify({ 
-          nationalId,
-          password 
-        }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        setError(data.message || 'Invalid password. Please try again.');
-        return;
-      }
-
-      navigate('/dashboard');
+      const user = await login(nationalId, password, accessToken);
+      toast.success(`Welcome back, ${user.name}!`);
+      const redirect = getRedirectRoute(user);
+      navigate(redirect, { replace: true });
     } catch (err) {
-      console.error('Login error:', err);
-      setError('Unable to connect. Please check your internet connection and try again.');
+      const message = getErrorMessage(err);
+      setError(message);
+      toast.error(message);
     } finally {
       setLoading(false);
     }
