@@ -212,9 +212,6 @@ export class StudentsService {
     const progressCourses = student.enrollments.
       filter((enrollment) => enrollment.status === EnrollmentStatus.IN_PROGRESS)
       .map((enrollment) => enrollment.course);
-    const completedCourses = student.enrollments.
-      filter((enrollment) => enrollment.status === EnrollmentStatus.PASSED)
-      .map((enrollment) => enrollment.course);
     return {
       message: 'Student dashboard fetched successfully',
       data: {
@@ -224,11 +221,12 @@ export class StudentsService {
           level: student.level,
           semester: student.semester,
           department: student.department,
+          cgpa: student.cgpa,
+          gpa: student.gpa,
         },
         coursesStats: {
           totalCourses: student.enrollments.length,
           progressCourses,
-          completedCourses,
         },
       },
     };
