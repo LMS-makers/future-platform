@@ -1,0 +1,42 @@
+interface SectionTitleProps {
+  title: string;
+  subtitle?: string;
+  alignment?: 'left' | 'center' | 'right';
+  showLine?: boolean;
+  linePosition?: 'center' | 'left';
+  className?: string;
+}
+
+export default function SectionTitle({
+  title,
+  subtitle,
+  alignment = 'center',
+  showLine = true,
+  linePosition = 'center',
+  className = ''
+}: SectionTitleProps) {
+  const alignmentStyles = {
+    left: 'text-left',
+    center: 'text-center',
+    right: 'text-right'
+  };
+
+  const linePositionStyles = {
+    left: 'left-0 -translate-x-0',
+    center: 'left-1/2 -translate-x-1/2'
+  };
+
+  return (
+    <div className={`mb-16 ${alignmentStyles[alignment]} ${className}`}>
+      <h2 className="text-brand-navy text-4xl font-extrabold relative inline-block">
+        {title}
+        {showLine && (
+          <div className={`absolute -bottom-3 w-24 h-1 bg-brand-blue ${linePositionStyles[linePosition]}`} />
+        )}
+      </h2>
+      {subtitle && (
+        <p className="text-brand-blue font-semibold text-lg mt-2">{subtitle}</p>
+      )}
+    </div>
+  );
+}
