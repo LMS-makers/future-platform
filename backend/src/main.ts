@@ -5,9 +5,10 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-   app.enableCors({
+  app.enableCors({
     origin: [
       'https://future-platform-indol.vercel.app',
+      'https://future-platform-pro.vercel.app',
       'http://localhost:5173'
     ],
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
