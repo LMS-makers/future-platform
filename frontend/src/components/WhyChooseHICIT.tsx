@@ -58,12 +58,12 @@ export default function WhyChooseHICIT() {
             <div className="relative">
               <div className="absolute -inset-4 bg-primary-700/10 rounded-2xl blur-xl" />
               <div className="relative bg-white rounded-2xl shadow-lg overflow-hidden">
-                <img
+                {/* <img
                   src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&h=300&fit=crop"
                   alt="Professor"
                   className="w-full h-64 object-cover"
                   loading="lazy"
-                />
+                /> */}
                 <div className="p-6">
                   <div className="flex items-center gap-4 mb-3">
                     <img

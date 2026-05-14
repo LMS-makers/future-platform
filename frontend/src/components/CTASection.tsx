@@ -19,10 +19,10 @@ export default function CTASection() {
             Take the first step towards an exciting career in technology.
             Applications are now open for the 2025-2026 academic year.
           </p>
-          <button className="group bg-white hover:bg-neutral-100 text-primary-900 px-10 py-4 rounded-xl transition-all duration-300 font-bold text-lg hover:shadow-lg hover:shadow-white/20 inline-flex items-center gap-3">
+          <a href="/login" className="group bg-white hover:bg-neutral-100 text-primary-900 px-10 py-4 rounded-xl transition-all duration-300 font-bold text-lg hover:shadow-lg hover:shadow-white/20 inline-flex items-center gap-3">
             Apply Now
             <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
-          </button>
+          </a>
         </motion.div>
       </div>
     </section>
