@@ -212,6 +212,7 @@ export class StudentsService {
     const progressCourses = student.enrollments.
       filter((enrollment) => enrollment.status === EnrollmentStatus.IN_PROGRESS)
       .map((enrollment) => enrollment.course);
+    const academicEstimation = this.estimate(student.gpa);
     return {
       message: 'Student dashboard fetched successfully',
       data: {
@@ -223,6 +224,7 @@ export class StudentsService {
           department: student.department,
           cgpa: student.cgpa,
           gpa: student.gpa,
+          academicEstimation,
         },
         coursesStats: {
           totalCourses: student.enrollments.length,
@@ -294,5 +296,22 @@ export class StudentsService {
   // Get Number of Students
   public async getNumberOfStudents() {
     return this.studentRepository.count();
+  }
+
+  // Get Academic Estimation
+  public estimate(gpa: number) {
+    if (gpa >= 3.6) {
+      return 'Excellent';
+    }
+    if (gpa >= 3.0) {
+      return 'Very Good';
+    }
+    if (gpa >= 2.0) {
+      return 'Good';
+    }
+    if (gpa >= 1.0) {
+      return 'Pass';
+    }
+    return 'Fail';
   }
 }
