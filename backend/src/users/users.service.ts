@@ -28,6 +28,26 @@ export class UsersService {
     });
   }
 
+  // Get All Users
+  public async getAllUsers() {
+    const users = await this.usersRepository.find({
+      select: [
+        'id',
+        'full_name',
+        'national_id',
+        'email',
+        'phone',
+        'role',
+        'is_password_set'
+      ],
+    });
+
+    return {
+      data: users,
+      count: users.length,
+    };
+  }
+
   /**
    * Create a new user
    * @param registerDto

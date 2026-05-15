@@ -81,6 +81,16 @@ export class UsersController {
     return this.usersService.getCurrentUser(user.sub);
   }
 
+  // GET: ~/api/users/all
+  @Get('all')
+  @UseGuards(AuthRolesGuard)
+  @Roles(Role.ADMIN)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get all users' })
+  getAllUsers() {
+    return this.usersService.getAllUsers();
+  }
+
   // DELETE: ~/api/users/delete/:id
   @Delete('delete/:id')
   @UseGuards(AuthGuard, AuthRolesGuard)
