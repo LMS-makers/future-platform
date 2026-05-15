@@ -1,31 +1,31 @@
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
-import { 
-  WhyChooseHICIT, 
-  Departments, 
-  LMSSection, 
-  MissionStats,
-  ExperienceSection, 
-  NewsSection, 
-  CTASection, 
-  Footer 
-} from "./sections";
+import WhyChooseHICIT from "./components/WhyChooseHICIT";
+// import Departments from "./components/Departments";
+import DepartmentsGrid from "./components/DepartmentsGrid";
+import LMSSection from "./components/LMSSection";
+import ExperienceSection from "./components/ExperienceSection";
+import News from "./components/News";
+// import PeopleSection from "./components/PeopleSection";
+import CTASection from "./components/CTASection";
+import Footer from "./components/Footer";
 
 function App() {
-  return (
-    <div className="min-h-screen bg-white overflow-x-hidden">
-      <Navbar />
-      <Hero />
-      <WhyChooseHICIT />
-      <Departments />
-      <LMSSection />
-      <MissionStats />
-      <ExperienceSection />
-      <NewsSection />
-      <CTASection />
-      <Footer />
-    </div>
-  );
+	return (
+		<div className="min-h-screen bg-white">
+			<Navbar />
+			<Hero />
+			<WhyChooseHICIT />
+			{/* <Departments /> */}
+			<DepartmentsGrid />
+			<LMSSection />
+			<ExperienceSection />
+			<News />
+			{/* <PeopleSection /> */}
+			<CTASection />
+			<Footer />
+		</div>
+	);
 }
 
 export default App;

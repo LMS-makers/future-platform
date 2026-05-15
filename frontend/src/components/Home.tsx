@@ -1,121 +1,131 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useAuthStore } from '../store/authStore';
-import { storage } from '../utils/storage';
 import studentApi from '../api/studentApi';
-import type { DashboardGpa } from '../types/student';
+import type { StudentDashboardData } from '../types/student';
 import Sidebar from './student/Sidebar';
 import StatsCard from './student/StatsCard';
 import CourseCard from './student/CourseCard';
 import RightPanel from './student/RightPanel';
-import { courses, schedule, tasks } from './student/data';
+import { schedule, tasks } from './student/data';
 
-function normalizeGpa(raw: Record<string, unknown>): DashboardGpa {
-  console.log('=== normalizeGpa INPUT ===', raw);
-  console.log('=== normalizeGpa KEYS ===', Object.keys(raw));
+function deriveAcademicStanding(cgpa: number): string {
+  if (cgpa >= 3.5) return 'Excellent';
+  if (cgpa >= 3.0) return 'Very Good';
+  if (cgpa >= 2.0) return 'Good';
+  return 'At Risk';
+}
 
-  const src: Record<string, unknown> =
-    raw.data && typeof raw.data === 'object' && !Array.isArray(raw.data)
-      ? { ...raw, ...(raw.data as Record<string, unknown>) }
-      : raw;
-
-  const extract = (field: string): number | undefined => {
-    const v = src[field];
-    if (v == null) return undefined;
-    const n = Number(v);
-    return Number.isFinite(n) ? n : undefined;
-  };
-
-  const extractStr = (field: string): string | undefined => {
-    const v = src[field];
-    if (v == null || v === '') return undefined;
-    return String(v);
-  };
-
-  const currentGpaVal =
-    extract('currentGpa') ??
-    extract('current_gpa') ??
-    extract('gpa') ??
-    extract('semester_gpa') ??
-    extract('current_semester_gpa') ??
-    0;
-
-  const cgpaVal =
-    extract('cgpa') ??
-    extract('cumulativeGpa') ??
-    extract('cumulative_gpa') ??
-    extract('cumulative_gpa_snake') ??
-    0;
-
-  const gpaChangeVal = extract('gpaChange') ?? extract('gpa_change') ?? 0;
-
-  const academicStandingVal =
-    extractStr('academicStanding') ??
-    extractStr('academic_standing') ??
-    extractStr('standing') ??
-    '—';
-
-  const overallProgressVal = extract('overallProgress') ?? extract('overall_progress') ?? 0;
-
-  const result: DashboardGpa = {
-    currentGpa: currentGpaVal,
-    cgpa: cgpaVal,
-    gpaChange: gpaChangeVal,
-    academicStanding: academicStandingVal,
-    overallProgress: overallProgressVal,
-  };
-
-  console.log('=== normalizeGpa RESULT ===', result);
-  return result;
+function Skeleton() {
+  return (
+    <div className="min-h-screen flex bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100">
+      <div className="w-64 bg-[#0a1d4a]" />
+      <main className="flex-1 ml-64 p-8 animate-pulse">
+        <div className="flex items-center justify-between mb-8">
+          <div className="h-4 bg-slate-200 dark:bg-slate-700 rounded w-48" />
+          <div className="h-10 bg-slate-200 dark:bg-slate-700 rounded-xl w-80" />
+        </div>
+        <div className="h-8 bg-slate-200 dark:bg-slate-700 rounded w-72 mb-2" />
+        <div className="h-4 bg-slate-200 dark:bg-slate-700 rounded w-96 mb-8" />
+        <div className="grid grid-cols-2 gap-6 mb-8">
+          <div className="h-36 bg-slate-200 dark:bg-slate-700 rounded-2xl" />
+          <div className="h-36 bg-slate-200 dark:bg-slate-700 rounded-2xl" />
+          <div className="h-36 bg-slate-200 dark:bg-slate-700 rounded-2xl" />
+          <div className="h-36 bg-slate-200 dark:bg-slate-700 rounded-2xl" />
+        </div>
+        <div className="grid grid-cols-3 gap-6">
+          <div className="h-64 bg-slate-200 dark:bg-slate-700 rounded-2xl" />
+          <div className="h-64 bg-slate-200 dark:bg-slate-700 rounded-2xl" />
+          <div className="h-64 bg-slate-200 dark:bg-slate-700 rounded-2xl" />
+        </div>
+      </main>
+    </div>
+  );
 }
 
 export default function Home() {
   const { user, logout } = useAuthStore();
-  const [gpa, setGpa] = useState<DashboardGpa | null>(null);
+  const [dashboardData, setDashboardData] = useState<StudentDashboardData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const fetchIdRef = useRef(0);
 
-  console.log('=== USER OBJECT ===', user);
-  console.log('=== USER NAME ===', user?.name);
-  console.log('=== USER NATIONAL ID ===', user?.nationalId);
-  console.log('=== TOKEN ===', storage.getToken() ? storage.getToken()!.substring(0, 30) + '...' : 'NONE');
-  console.log('=== AUTH USER (from storage) ===', storage.getUser());
-
-  const fetchGpa = useCallback(async (nationalId: string, fetchId: number) => {
+  const fetchDashboard = useCallback(async (fetchId: number) => {
+    setLoading(true);
+    setError(null);
     try {
-      const data = await studentApi.getDashboardGpa(nationalId);
-      console.log('=== GPA DATA RECEIVED IN HOME ===', data);
-      if (fetchIdRef.current !== fetchId) {
-        console.log('=== GPA FETCH STALE, DISCARDING ===', { current: fetchIdRef.current, received: fetchId });
-        return;
-      }
-      const normalized = normalizeGpa(data as Record<string, unknown>);
-      console.log('=== SETTING GPA STATE ===', normalized);
-      setGpa(normalized);
-    } catch (err) {
-      console.error('=== GPA FETCH ERROR IN HOME ===', err);
+      const response = await studentApi.getDashboard();
       if (fetchIdRef.current !== fetchId) return;
+      setDashboardData(response.data);
+    } catch (err) {
+      if (fetchIdRef.current !== fetchId) return;
+      const message = err instanceof Error ? err.message : 'Failed to load dashboard data';
+      setError(message);
+    } finally {
+      if (fetchIdRef.current === fetchId) {
+        setLoading(false);
+      }
     }
   }, []);
 
   useEffect(() => {
-    const token = storage.getToken();
-    const nationalId = user?.nationalId;
-    console.log('=== GPA EFFECT FIRED ===', { hasToken: !!token, nationalId });
-    if (!token || !nationalId) return;
-
     const fetchId = ++fetchIdRef.current;
-    fetchGpa(nationalId, fetchId);
-  }, [user?.nationalId, fetchGpa]);
+    fetchDashboard(fetchId);
+    return () => {
+      fetchIdRef.current = -1;
+    };
+  }, [fetchDashboard]);
 
-  const statsCards = [
-    { icon: 'person', title: 'Academic Profile', subtitle: 'View and edit your academic information', badge: gpa ? `CGPA: ${gpa.cgpa.toFixed(2)}/4.0` : '—' },
-    { icon: 'bar_chart', title: 'Academic Statistics', subtitle: 'View your progress and performance', badge: '85% average' },
-    { icon: 'groups', title: 'Learning Groups', subtitle: 'Collaborate with your peers', badge: '3 active groups' },
-    { icon: 'menu_book', title: 'Digital Course Library', subtitle: 'Access all course materials', badge: '24 courses' },
-  ];
+  const academicStanding = useMemo(() => {
+    if (!dashboardData) return '—';
+    return deriveAcademicStanding(dashboardData.student.cgpa);
+  }, [dashboardData]);
 
   const handleLogout = () => {
     logout();
   };
+
+  if (loading) return <Skeleton />;
+
+  if (error || !dashboardData) {
+    return (
+      <div className="min-h-screen flex bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100">
+        <Sidebar onLogout={handleLogout} />
+        <main className="flex-1 ml-64 p-8 flex items-center justify-center">
+          <div className="text-center space-y-4">
+            <span className="material-symbols-outlined text-5xl text-red-400">error_outline</span>
+            <p className="text-slate-500">{error || 'Failed to load dashboard data'}</p>
+            <button
+              onClick={() => {
+                setError(null);
+                const fetchId = ++fetchIdRef.current;
+                fetchDashboard(fetchId);
+              }}
+              className="px-6 py-2.5 bg-blue-600 text-white rounded-xl text-sm font-bold hover:bg-blue-700 transition-colors"
+            >
+              Retry
+            </button>
+          </div>
+        </main>
+      </div>
+    );
+  }
+
+  const { student, coursesStats } = dashboardData;
+
+  const statsCards = [
+    {
+      icon: 'person',
+      title: 'Academic Profile',
+      subtitle: 'View and edit your academic information',
+      badge: `CGPA: ${student.cgpa.toFixed(2)}/4.0`,
+    },
+    {
+      icon: 'bar_chart',
+      title: 'Academic Statistics',
+      subtitle: 'View your progress and performance',
+      badge: academicStanding,
+    },
+  ];
 
   return (
     <div className="min-h-screen flex bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100">
@@ -162,10 +172,10 @@ export default function Home() {
           <div className="flex-1 space-y-8">
             <section>
               <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">
-                Welcome back, {user?.name || 'User'}!
+                Welcome back, {student.name}!
               </h2>
               <p className="text-slate-500">
-                You've completed <span className="text-blue-600 font-bold">85%</span> of your weekly goals. Keep up the momentum!
+                Academic Standing: <span className="text-blue-600 font-bold">{academicStanding}</span>
               </p>
             </section>
 
@@ -180,15 +190,27 @@ export default function Home() {
                 <h3 className="text-lg font-bold text-slate-900 dark:text-white">In Progress Courses</h3>
                 <a href="#" className="text-blue-600 dark:text-blue-400 text-sm font-semibold">View All</a>
               </div>
-              <div className="grid grid-cols-3 gap-6">
-                {courses.map((course) => (
-                  <CourseCard key={course.id} course={course} />
-                ))}
-              </div>
+              {coursesStats.progressCourses.length > 0 ? (
+                <div className="grid grid-cols-3 gap-6">
+                  {coursesStats.progressCourses.map((course) => (
+                    <CourseCard key={course.id} course={course} />
+                  ))}
+                </div>
+              ) : (
+                <div className="bg-white dark:bg-slate-800 rounded-2xl p-8 text-center border border-slate-100 dark:border-slate-700">
+                  <span className="material-symbols-outlined text-3xl text-slate-300 dark:text-slate-600 mb-2">menu_book</span>
+                  <p className="text-sm text-slate-400">No courses in progress</p>
+                </div>
+              )}
             </section>
           </div>
 
-          <RightPanel schedule={schedule} tasks={tasks} gpa={gpa} />
+          <RightPanel
+            schedule={schedule}
+            tasks={tasks}
+            gpa={student.gpa}
+            cgpa={student.cgpa}
+          />
         </div>
       </main>
     </div>

@@ -99,14 +99,14 @@ export default function Footer() {
             <h4 className="font-semibold text-white mb-4">Location</h4>
             <div className="rounded-xl overflow-hidden border border-neutral-800">
               <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3453.1!2d31.2357!3d30.0444!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzDCsDAyJzM5LjgiTiAzMcKwMTQnMDguNSJF!5e0!3m2!1sen!2seg!4v1234567890"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3453.1!2d31.3588492!3d31.0656226!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14f79de36e7013c9%3A0xec4d6a6470a22df3!2sFuture+Higher+Institute+of+Engineering+and+Technology!5e0!3m2!1sen!2seg!4v1"
                 width="100%"
                 height="200"
                 style={{ border: 0 }}
                 allowFullScreen
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
-                title="HICIT Location"
+                title="Future Higher Institute of Engineering and Technology"
                 className="grayscale hover:grayscale-0 transition-all duration-300"
               />
             </div>
@@ -117,7 +117,7 @@ export default function Footer() {
       <div className="border-t border-neutral-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-neutral-500 text-sm">
-            © 2025 HICIT. All rights reserved.
+            &copy; 2025 HICIT. All rights reserved.
           </p>
           <div className="flex gap-6">
             <a href="#" className="text-neutral-500 hover:text-white text-sm transition-colors duration-200">

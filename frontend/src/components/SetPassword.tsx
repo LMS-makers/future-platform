@@ -1,29 +1,10 @@
 import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Lock, History, Eye, EyeOff, ArrowLeft, GraduationCap, Info, Loader2, Moon, Sun } from 'lucide-react';
+import { GraduationCap, ArrowLeft, Loader2, Moon, Sun, Lock, Eye, EyeOff, Info } from 'lucide-react';
 import { toast } from 'react-hot-toast';
-import { AxiosError } from 'axios';
 import { useAuthStore } from '../store/authStore';
 import { storage } from '../utils/storage';
-
-function getErrorMessage(error: unknown): string {
-  if (error instanceof AxiosError) {
-    if (error.response?.status === 404) {
-      return 'User not found. Please return to admin.';
-    }
-    if (error.response?.status === 401) {
-      return 'Invalid credentials. Please try again.';
-    }
-    if (error.response?.status === 400) {
-      return error.response.data?.message || 'Bad request. Please check your input.';
-    }
-    return error.response?.data?.message || 'Something went wrong. Please try again.';
-  }
-  if (error instanceof Error) {
-    return error.message;
-  }
-  return 'Something went wrong. Please try again.';
-}
+import { getErrorMessage, validatePassword, validatePasswordMatch } from '../utils/errorHandling';
 
 export default function SetPassword() {
   const [newPassword, setNewPassword] = useState('');
@@ -31,11 +12,11 @@ export default function SetPassword() {
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [errors, setErrors] = useState<{ general?: string; password?: string; confirm?: string }>({});
   const navigate = useNavigate();
   const location = useLocation();
   const { setPassword } = useAuthStore();
-  
+
   const nationalId = location.state?.nationalId || storage.getTempNationalId() || '';
   const accessToken = location.state?.accessToken || storage.getTempAccessToken() || '';
 
@@ -54,20 +35,17 @@ export default function SetPassword() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
+    setErrors({});
 
-    if (!newPassword) {
-      setError('Please enter a password');
+    const passwordValidation = validatePassword(newPassword);
+    if (!passwordValidation.isValid) {
+      setErrors({ password: passwordValidation.message });
       return;
     }
 
-    if (newPassword.length < 8) {
-      setError('Password must be at least 8 characters long');
-      return;
-    }
-
-    if (newPassword !== confirmPassword) {
-      setError('Passwords do not match');
+    const matchValidation = validatePasswordMatch(newPassword, confirmPassword);
+    if (!matchValidation.isValid) {
+      setErrors({ confirm: matchValidation.message });
       return;
     }
 
@@ -77,11 +55,11 @@ export default function SetPassword() {
       const response = await setPassword(newPassword, confirmPassword, accessToken);
       toast.success('Password set successfully!');
       navigate('/login', {
-        state: { nationalId, accessToken: response.accessToken }
+        state: { nationalId, accessToken: response.accessToken },
       });
     } catch (err) {
       const message = getErrorMessage(err);
-      setError(message);
+      setErrors({ general: message });
       toast.error(message);
     } finally {
       setLoading(false);
@@ -147,7 +125,7 @@ export default function SetPassword() {
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400 dark:text-slate-500">
-                  <History size={18} />
+                  <Lock size={18} />
                 </div>
                 <input
                   className="block w-full pl-10 pr-10 py-3.5 bg-white dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600 rounded-xl text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:shadow-lg focus:shadow-blue-500/20 transition-all duration-200 sm:text-base font-medium"
@@ -169,9 +147,9 @@ export default function SetPassword() {
               </div>
             </div>
 
-            {error && (
+            {errors.general && (
               <div className="text-red-600 dark:text-red-400 text-sm font-medium bg-red-50 dark:bg-red-900/20 px-4 py-3 rounded-lg border border-red-200 dark:border-red-800">
-                {error}
+                {errors.general}
               </div>
             )}
 
@@ -207,18 +185,21 @@ export default function SetPassword() {
               </button>
             </div>
           </form>
-        </div>
 
-        <div className="mt-8 text-center">
-          <Link className="inline-flex items-center text-sm font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors" to="/login">
-            <ArrowLeft className="mr-2" size={16} />
-            Back to Login
-          </Link>
+          <div className="mt-6 text-center">
+            <Link
+              to="/login"
+              className="text-sm text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-300 font-medium inline-flex items-center gap-1"
+            >
+              <ArrowLeft className="rotate-180" size={16} />
+              Back to Login
+            </Link>
+          </div>
         </div>
       </main>
 
       <button
-        className="fixed bottom-6 right-6 p-3 bg-white/80 dark:bg-slate-700/80 backdrop-blur-sm rounded-full shadow-lg text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-600 transition-all duration-200"
+        className="fixed bottom-6 right-6 p-3 bg-white dark:bg-slate-800 rounded-full shadow-lg text-gray-600 dark:text-gray-300 transition-colors"
         onClick={() => document.documentElement.classList.toggle('dark')}
       >
         <Moon className="w-5 h-5 block dark:hidden" />

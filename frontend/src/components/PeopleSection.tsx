@@ -10,7 +10,7 @@ const tabs: { key: PersonType; label: string }[] = [
   { key: 'graduates', label: 'Graduates' },
 ];
 
-const fetchMap: Record<PersonType, () => Promise<any[]>> = {
+const fetchMap: Record<PersonType, () => Promise<unknown>> = {
   students: fetchStudents,
   professors: fetchProfessors,
   graduates: fetchGraduates,
@@ -92,7 +92,7 @@ export default function PeopleSection() {
           >
             {loading
               ? Array.from({ length: 4 }).map((_, i) => <SkeletonCard key={i} />)
-              : data?.map((person: any) => (
+              : (data as any[])?.map((person: any) => (
                   <motion.div
                     key={person.id}
                     initial={{ opacity: 0, scale: 0.95 }}

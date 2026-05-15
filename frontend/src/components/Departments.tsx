@@ -50,7 +50,7 @@ export default function Departments() {
               Departments
             </h2>
 
-            <div className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
               {departments.map((dept, i) => (
                 <motion.div
                   key={dept.title}
@@ -58,7 +58,7 @@ export default function Departments() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.1 }}
-                  className="flex gap-4 p-4 rounded-xl hover:bg-neutral-50 transition-colors duration-200 group"
+                  className="flex flex-col gap-3 p-4 rounded-xl hover:bg-neutral-50 transition-colors duration-200 group"
                 >
                   <div className="w-12 h-12 bg-primary-700/10 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:bg-primary-700 transition-colors duration-200">
                     <dept.icon className="text-primary-700 group-hover:text-white transition-colors duration-200" size={24} />

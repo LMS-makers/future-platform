@@ -14,7 +14,7 @@ import { RoleGuard } from './components/RoleGuard.tsx'
 import { useAuthStore } from './store/authStore.ts'
 import { ROUTES } from './utils/constants.ts'
 
-function AuthInitializer({ children }: { children: React.ReactNode }) {
+export function AuthInitializer({ children }: { children: React.ReactNode }) {
   const initializeAuth = useAuthStore((state) => state.initializeAuth);
 
   useEffect(() => {

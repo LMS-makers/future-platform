@@ -1,76 +1,102 @@
-import type { Student, Professor, Graduate } from '../types/user';
-import { API_BASE_URL } from '../utils/constants';
+import { API_BASE_URL } from "../utils/constants";
+import {
+	fetchMockStudents,
+	fetchMockProfessors,
+	fetchMockGraduates,
+	fetchMockDepartments,
+	fetchMockNews,
+} from "./mockData";
 
-const API_BASE = API_BASE_URL + '/api';
+const API_BASE = `${API_BASE_URL}/api`;
 
-async function fetchCount(endpoint: string): Promise<number> {
-  try {
-    const res = await fetch(`${API_BASE}${endpoint}`);
-    if (!res.ok) throw new Error(`Failed to fetch ${endpoint}`);
-    const text = await res.text();
-    const parsed = JSON.parse(text);
-    return typeof parsed === 'number' ? parsed : (parsed.count ?? parsed);
-  } catch {
-    return 0;
-  }
+/**
+ * Generic fetch wrapper with error handling
+ */
+async function fetchFromAPI<T>(endpoint: string): Promise<T> {
+	try {
+		const response = await fetch(`${API_BASE}${endpoint}`);
+		if (!response.ok) {
+			throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+		}
+		return await response.json();
+	} catch (error) {
+		console.error(`Failed to fetch ${endpoint}:`, error);
+		throw error;
+	}
 }
 
-export const fetchInstructorCount = async (): Promise<number> => {
-  return fetchCount('/instructors/count');
-};
+/**
+ * Fetch count from API endpoint
+ */
+async function fetchCount(endpoint: string): Promise<number> {
+	try {
+		const data = await fetchFromAPI<{ count?: number } | number>(endpoint);
+		return typeof data === "number" ? data : (data.count ?? 0);
+	} catch {
+		return 0;
+	}
+}
 
-export const fetchCourseCount = async (): Promise<number> => {
-  return fetchCount('/courses/count');
-};
+// ============================================
+// Count Endpoints
+// ============================================
 
-export const fetchUserCount = async (): Promise<number> => {
-  return fetchCount('/users/count');
-};
+export async function fetchInstructorCount(): Promise<number> {
+	return fetchCount("/instructors/count");
+}
 
-export const fetchStudentCount = async (): Promise<number> => {
-  return fetchCount('/students/count');
-};
+export async function fetchCourseCount(): Promise<number> {
+	return fetchCount("/courses/count");
+}
 
-// Mock data for demo purposes - replace with actual API calls when available
-const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+export async function fetchUserCount(): Promise<number> {
+	return fetchCount("/users/count");
+}
 
-export const fetchStudents = async (): Promise<Student[]> => {
-  await delay(800);
-  return [
-    { id: 1, name: 'Amina Khalil', role: 'Computer Science Student', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150', bio: 'Passionate about machine learning and web development.', year: 'Year 3', department: 'CS' },
-    { id: 2, name: 'Omar Hassan', role: 'IT Student', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150', bio: 'Focused on network security and cloud infrastructure.', year: 'Year 2', department: 'IT' },
-    { id: 3, name: 'Sara Ahmed', role: 'Information Systems Student', avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150', bio: 'Interested in data analytics and business intelligence.', year: 'Year 4', department: 'IS' },
-  ];
-};
+export async function fetchStudentCount(): Promise<number> {
+	return fetchCount("/students/count");
+}
 
-export const fetchProfessors = async (): Promise<Professor[]> => {
-  await delay(800);
-  return [
-    { id: 1, name: 'Dr. Fatima El-Sayed', role: 'Professor of Computer Science', avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150', bio: 'Expert in AI and NLP.', specialization: 'AI & NLP', publications: 45 },
-    { id: 2, name: 'Dr. Hassan Ibrahim', role: 'Professor of Cybersecurity', avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150', bio: 'Leading researcher in network security.', specialization: 'Cybersecurity', publications: 38 },
-  ];
-};
+// ============================================
+// Mock Data Endpoints (Fallback)
+// ============================================
 
-export const fetchGraduates = async (): Promise<Graduate[]> => {
-  await delay(800);
-  return [
-    { id: 1, name: 'Mariam Adel', role: 'Software Engineer', avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150', bio: 'Building innovative solutions.', graduationYear: 2023, currentRole: 'Software Engineer', company: 'TechCorp' },
-    { id: 2, name: 'Ahmed Samir', role: 'Data Analyst', avatar: 'https://images.unsplash.com/photo-1548372290-8d01b6c8e78c?w=150', bio: 'Transforming business data.', graduationYear: 2022, currentRole: 'Data Analyst', company: 'DataFlow Inc' },
-  ];
-};
+export async function fetchStudents() {
+	try {
+		return await fetchFromAPI("/students");
+	} catch {
+		return fetchMockStudents();
+	}
+}
 
-export const fetchDepartments = async () => {
-  return [
-    { id: 1, name: 'Computer Science', description: 'Foundational principles and advanced programming concepts to build modern software solutions.', icon: 'code', image: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=400' },
-    { id: 2, name: 'Information Technology', description: 'Master network architecture, cloud systems, and cybersecurity for the modern enterprise.', icon: 'wifi', image: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=400' },
-    { id: 3, name: 'Information System', description: 'Bridging technology and business logic through data management and strategic planning.', icon: 'database', image: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=400' },
-  ];
-};
+export async function fetchProfessors() {
+	try {
+		return await fetchFromAPI("/professors");
+	} catch {
+		return fetchMockProfessors();
+	}
+}
 
-export const fetchNews = async () => {
-  return [
-    { id: 1, category: 'CS Department', title: 'Advancing AI Research at the Institute', excerpt: 'New collaborative research grant awarded to our Computer Science faculty for innovative AI development...', image: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=400' },
-    { id: 2, category: 'IS Department', title: 'The Future of Enterprise Data Strategy', excerpt: 'How Information Systems students are reshaping corporate decision-making...', image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400' },
-    { id: 3, category: 'IT Department', title: 'Cloud Computing Summit 2024', excerpt: 'Exploring the frontiers of AWS and Azure deployments...', image: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=400' },
-  ];
-};
+export async function fetchGraduates() {
+	try {
+		return await fetchFromAPI("/graduates");
+	} catch {
+		return fetchMockGraduates();
+	}
+}
+
+export async function fetchDepartments() {
+	try {
+		return await fetchFromAPI("/departments");
+	} catch {
+		return fetchMockDepartments();
+	}
+}
+
+export async function fetchNews() {
+	try {
+		return await fetchFromAPI("/news");
+	} catch {
+		return fetchMockNews();
+	}
+}
