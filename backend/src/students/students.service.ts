@@ -319,6 +319,26 @@ export class StudentsService {
     return this.getStudentById(id);
   }
 
+  /**
+   * Delete student
+   * @param id
+   * @returns
+   */
+  public async deleteStudent(id: string) {
+    const student = await this.studentRepository.findOne({
+      where: { id },
+      relations: ['user'],
+    });
+    if (!student) {
+      throw new NotFoundException('Student not found');
+    }
+    await this.studentRepository.delete(student.id);
+    await this.userRepository.delete({ id: student.user.id });
+    return {
+      message: 'Student deleted successfully',
+    };
+  }
+
   // Get Number of Students
   public async getNumberOfStudents() {
     return this.studentRepository.count();
