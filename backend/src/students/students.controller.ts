@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '../users/guards/auth.guard';
 import { CreateStudentDto } from './dtos/create-student.dto';
 import { StudentsService } from './students.service';
@@ -8,6 +8,7 @@ import { AuthRolesGuard } from '../users/guards/auth-role.guard';
 import { Roles } from '../users/decorators/user-role.decorator';
 import { Department, Gender, Level, Role } from '../../utils/enum';
 import { ApiBearerAuth, ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { UpdateStudentDto } from './dtos/update-student.dto';
 
 @ApiTags('Students')
 @Controller('api/students')
@@ -75,5 +76,18 @@ export class StudentsController {
   @ApiOperation({ summary: 'Get student by student code' })
   async getStudentByCode(@Param('student_code') student_code: string) {
     return this.studentsService.getStudentByCode(student_code);
+  }
+
+  @Put(':id')
+  @UseGuards(AuthRolesGuard)
+  @Roles(Role.ADMIN)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Update student (Admin only)' })
+  @ApiResponse({ status: 201, description: 'Student successfully updated' })
+  public async updateStudent(
+    @Param('id') id: string,
+    @Body() updateStudentDto: UpdateStudentDto,
+  ) {
+    return this.studentsService.updateStudent(id, updateStudentDto);
   }
 }

@@ -286,11 +286,37 @@ export class StudentsService {
    * @returns
    */
   public async updateStudent(id: string, dto: UpdateStudentDto) {
-    const student = await this.getStudentById(id);
-    if (!student) {
-      throw new NotFoundException('Student not found');
-    }
-    return await this.studentRepository.update(id, dto);
+    const { user, ...studentFields } = dto;
+
+    await this.studentRepository.manager.transaction(async (manager) => {
+      const studentUpdates = Object.fromEntries(
+        Object.entries(studentFields).filter(([_, v]) => v !== undefined)
+      );
+
+      if (Object.keys(studentUpdates).length > 0) {
+        await manager.update(Student, id, studentUpdates);
+      }
+
+      if (user) {
+        const student = await manager.findOne(Student, {
+          where: { id },
+          select: { user: { id: true } },
+          relations: ['user'],
+        });
+
+        if (!student) throw new NotFoundException(`Student ${id} not found`);
+
+        const userUpdates = Object.fromEntries(
+          Object.entries(user).filter(([_, v]) => v !== undefined)
+        );
+
+        if (Object.keys(userUpdates).length > 0) {
+          await manager.update(User, student.user.id, userUpdates);
+        }
+      }
+    });
+
+    return this.getStudentById(id);
   }
 
   // Get Number of Students
