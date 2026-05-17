@@ -21,11 +21,7 @@ export class UsersService {
 
   // Get Number of Users
   public async getNumberOfUsers() {
-    return this.usersRepository.count({
-      where: {
-        role: Role.ADMIN,
-      },
-    });
+    return this.usersRepository.count();
   }
 
   // Get All Users
