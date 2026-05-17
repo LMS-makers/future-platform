@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import { Menu } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
 import studentApi from '../api/studentApi';
 import type { StudentDashboardData } from '../types/student';
@@ -18,21 +19,19 @@ function deriveAcademicStanding(cgpa: number): string {
 function Skeleton() {
   return (
     <div className="min-h-screen flex bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100">
-      <div className="w-64 bg-[#0a1d4a]" />
-      <main className="flex-1 ml-64 p-8 animate-pulse">
+      <div className="hidden md:block w-64 bg-[#0a1d4a]" />
+      <main className="flex-1 md:ml-64 p-4 lg:p-8 animate-pulse">
         <div className="flex items-center justify-between mb-8">
           <div className="h-4 bg-slate-200 dark:bg-slate-700 rounded w-48" />
-          <div className="h-10 bg-slate-200 dark:bg-slate-700 rounded-xl w-80" />
+          <div className="h-10 bg-slate-200 dark:bg-slate-700 rounded-xl w-64 lg:w-80" />
         </div>
         <div className="h-8 bg-slate-200 dark:bg-slate-700 rounded w-72 mb-2" />
         <div className="h-4 bg-slate-200 dark:bg-slate-700 rounded w-96 mb-8" />
-        <div className="grid grid-cols-2 gap-6 mb-8">
-          <div className="h-36 bg-slate-200 dark:bg-slate-700 rounded-2xl" />
-          <div className="h-36 bg-slate-200 dark:bg-slate-700 rounded-2xl" />
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
           <div className="h-36 bg-slate-200 dark:bg-slate-700 rounded-2xl" />
           <div className="h-36 bg-slate-200 dark:bg-slate-700 rounded-2xl" />
         </div>
-        <div className="grid grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           <div className="h-64 bg-slate-200 dark:bg-slate-700 rounded-2xl" />
           <div className="h-64 bg-slate-200 dark:bg-slate-700 rounded-2xl" />
           <div className="h-64 bg-slate-200 dark:bg-slate-700 rounded-2xl" />
@@ -47,6 +46,7 @@ export default function Home() {
   const [dashboardData, setDashboardData] = useState<StudentDashboardData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const fetchIdRef = useRef(0);
 
   const fetchDashboard = useCallback(async (fetchId: number) => {
@@ -89,8 +89,8 @@ export default function Home() {
   if (error || !dashboardData) {
     return (
       <div className="min-h-screen flex bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100">
-        <Sidebar onLogout={handleLogout} />
-        <main className="flex-1 ml-64 p-8 flex items-center justify-center">
+        <Sidebar onLogout={handleLogout} isMobileOpen={sidebarOpen} onMobileClose={() => setSidebarOpen(false)} />
+        <main className="flex-1 md:ml-64 p-4 lg:p-8 flex items-center justify-center">
           <div className="text-center space-y-4">
             <span className="material-symbols-outlined text-5xl text-red-400">error_outline</span>
             <p className="text-slate-500">{error || 'Failed to load dashboard data'}</p>
@@ -129,28 +129,33 @@ export default function Home() {
 
   return (
     <div className="min-h-screen flex bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100">
-      <Sidebar onLogout={handleLogout} />
+      <Sidebar onLogout={handleLogout} isMobileOpen={sidebarOpen} onMobileClose={() => setSidebarOpen(false)} />
 
-      <main className="flex-1 ml-64 p-8">
-        <header className="flex items-center justify-between mb-8">
-          <div className="flex items-center gap-2 text-sm text-slate-500">
-            <span>Dashboard</span>
-            <span className="material-symbols-outlined text-sm">chevron_right</span>
-            <span className="text-slate-900 dark:text-white font-medium">Home</span>
+      <main className="flex-1 md:ml-64 min-w-0">
+        <header className="flex items-center justify-between px-4 lg:px-8 py-4 lg:py-6">
+          <div className="flex items-center gap-2 lg:gap-3 min-w-0">
+            <button onClick={() => setSidebarOpen(true)} className="lg:hidden text-slate-500 hover:text-slate-700 shrink-0">
+              <Menu className="w-6 h-6" />
+            </button>
+            <div className="flex items-center gap-2 text-sm text-slate-500 min-w-0">
+              <span className="truncate">Dashboard</span>
+              <span className="material-symbols-outlined text-sm shrink-0">chevron_right</span>
+              <span className="text-slate-900 dark:text-white font-medium truncate">Home</span>
+            </div>
           </div>
 
-          <div className="flex items-center gap-6">
-            <div className="relative group">
+          <div className="flex items-center gap-3 lg:gap-6 shrink-0">
+            <div className="relative group hidden sm:block">
               <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
                 search
               </span>
               <input
                 type="text"
                 placeholder="Search courses, tasks..."
-                className="pl-10 pr-4 py-2 bg-white dark:bg-slate-800 border-none rounded-xl text-sm w-80 shadow-sm focus:ring-2 focus:ring-blue-500/20 outline-none"
+                className="pl-10 pr-4 py-2 bg-white dark:bg-slate-800 border-none rounded-xl text-sm w-48 lg:w-80 shadow-sm focus:ring-2 focus:ring-blue-500/20 outline-none"
               />
             </div>
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3 lg:gap-4">
               <button className="relative">
                 <span className="material-symbols-outlined text-slate-400">notifications</span>
                 <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full border-2 border-background-light dark:border-background-dark" />
@@ -159,58 +164,62 @@ export default function Home() {
                 <span className="material-symbols-outlined text-slate-400">settings</span>
               </button>
               <div className="flex items-center gap-2">
-                <div className="w-9 h-9 rounded-full bg-blue-600 flex items-center justify-center text-white text-sm font-bold">
+                <div className="w-8 h-8 lg:w-9 lg:h-9 rounded-full bg-blue-600 flex items-center justify-center text-white text-sm font-bold">
                   {user?.name?.charAt(0)?.toUpperCase() || 'U'}
                 </div>
-                <span className="material-symbols-outlined text-slate-400 text-sm">expand_more</span>
+                <span className="material-symbols-outlined text-slate-400 text-sm hidden sm:inline">expand_more</span>
               </div>
             </div>
           </div>
         </header>
 
-        <div className="flex gap-8">
-          <div className="flex-1 space-y-8">
-            <section>
-              <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">
-                Welcome back, {student.name}!
-              </h2>
-              <p className="text-slate-500">
-                Academic Standing: <span className="text-blue-600 font-bold">{academicStanding}</span>
-              </p>
-            </section>
+        <div className="px-4 lg:px-8">
+          <div className="flex flex-col lg:flex-row lg:gap-8">
+            <div className="flex-1 space-y-6 lg:space-y-8 min-w-0">
+              <section>
+                <h2 className="text-2xl lg:text-3xl font-bold text-slate-900 dark:text-white mb-1 lg:mb-2 break-words">
+                  Welcome back, {student.name}!
+                </h2>
+                <p className="text-sm lg:text-base text-slate-500">
+                  Academic Standing: <span className="text-blue-600 font-bold">{academicStanding}</span>
+                </p>
+              </section>
 
-            <div className="grid grid-cols-2 gap-6">
-              {statsCards.map((card) => (
-                <StatsCard key={card.title} {...card} />
-              ))}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
+                {statsCards.map((card) => (
+                  <StatsCard key={card.title} {...card} />
+                ))}
+              </div>
+
+              <section>
+                <div className="flex items-center justify-between mb-4 lg:mb-6">
+                  <h3 className="text-base lg:text-lg font-bold text-slate-900 dark:text-white">In Progress Courses</h3>
+                  <a href="#" className="text-blue-600 dark:text-blue-400 text-sm font-semibold shrink-0">View All</a>
+                </div>
+                {coursesStats.progressCourses.length > 0 ? (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
+                    {coursesStats.progressCourses.map((course) => (
+                      <CourseCard key={course.id} course={course} />
+                    ))}
+                  </div>
+                ) : (
+                  <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 lg:p-8 text-center border border-slate-100 dark:border-slate-700">
+                    <span className="material-symbols-outlined text-3xl text-slate-300 dark:text-slate-600 mb-2">menu_book</span>
+                    <p className="text-sm text-slate-400">No courses in progress</p>
+                  </div>
+                )}
+              </section>
             </div>
 
-            <section>
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-lg font-bold text-slate-900 dark:text-white">In Progress Courses</h3>
-                <a href="#" className="text-blue-600 dark:text-blue-400 text-sm font-semibold">View All</a>
-              </div>
-              {coursesStats.progressCourses.length > 0 ? (
-                <div className="grid grid-cols-3 gap-6">
-                  {coursesStats.progressCourses.map((course) => (
-                    <CourseCard key={course.id} course={course} />
-                  ))}
-                </div>
-              ) : (
-                <div className="bg-white dark:bg-slate-800 rounded-2xl p-8 text-center border border-slate-100 dark:border-slate-700">
-                  <span className="material-symbols-outlined text-3xl text-slate-300 dark:text-slate-600 mb-2">menu_book</span>
-                  <p className="text-sm text-slate-400">No courses in progress</p>
-                </div>
-              )}
-            </section>
+            <div className="mt-6 lg:mt-0 shrink-0">
+              <RightPanel
+                schedule={schedule}
+                tasks={tasks}
+                gpa={student.gpa}
+                cgpa={student.cgpa}
+              />
+            </div>
           </div>
-
-          <RightPanel
-            schedule={schedule}
-            tasks={tasks}
-            gpa={student.gpa}
-            cgpa={student.cgpa}
-          />
         </div>
       </main>
     </div>

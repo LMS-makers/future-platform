@@ -89,7 +89,7 @@ export default function LoginPage() {
 
     try {
       const user = await login(nationalId, password, accessToken);
-      toast.success(`Welcome back, ${user.name}!`);
+      toast.success(`Welcome back, ${user.name || user.email}!`);
       const redirect = getRedirectRoute(user);
       navigate(redirect, { replace: true });
     } catch (err: unknown) {
