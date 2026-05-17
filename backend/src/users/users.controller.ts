@@ -9,6 +9,7 @@ import {
   Put,
   Patch,
   HttpCode,
+  Query,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dtos/create-user.dto';
@@ -23,7 +24,7 @@ import { Role } from '../../utils/enum';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { InitLoginDto } from './dtos/init-login.dto';
 import { SetPasswordDto } from './dtos/set-password.dto';
-import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Users')
 @Controller('api/users')
@@ -87,8 +88,12 @@ export class UsersController {
   @Roles(Role.ADMIN)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get all users' })
-  getAllUsers() {
-    return this.usersService.getAllUsers();
+  @ApiQuery({ name: 'page', type: 'number', required: false, description: 'Page number' })
+  @ApiQuery({ name: 'limit', type: 'number', required: false, description: 'Number of items per page' })
+  getAllUsers(@Query('page') page?: number, @Query('limit') limit?: number) {
+    if(page < 1) page = 1;
+    if(limit < 1) limit = 1;
+    return this.usersService.getAllUsers(page, limit);
   }
 
   // DELETE: ~/api/users/delete/:id

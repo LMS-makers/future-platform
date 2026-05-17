@@ -29,8 +29,10 @@ export class UsersService {
   }
 
   // Get All Users
-  public async getAllUsers() {
-    const users = await this.usersRepository.find({
+  public async getAllUsers(page?: number, limit?: number) {
+    const [users, count] = await this.usersRepository.findAndCount({
+      skip: page ? (page - 1) * limit : 0,
+      take: limit ? limit : 10,
       select: [
         'id',
         'full_name',
@@ -44,7 +46,7 @@ export class UsersService {
 
     return {
       data: users,
-      count: users.length,
+      count,
     };
   }
 
