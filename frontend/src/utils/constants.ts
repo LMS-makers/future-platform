@@ -4,6 +4,7 @@ export const ROUTES = {
   INIT_LOGIN: '/init-login',
   SET_PASSWORD: '/set-password',
   DASHBOARD: '/dashboard',
+  ADMIN_DASHBOARD: '/admin/dashboard',
   HOME_PAGE: '/home',
   REGISTER: '/register',
 } as const;
@@ -12,7 +13,8 @@ export const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://future-plat
 
 export const ROLES = {
   ADMIN: 'admin',
-  USER: 'user',
+  DOCTOR: 'doctor',
+  STUDENT: 'student',
 } as const;
 
 export const STORAGE_KEYS = {

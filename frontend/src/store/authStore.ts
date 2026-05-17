@@ -4,11 +4,8 @@ import { AxiosError } from "axios";
 import type { AuthUser, InitLoginResponse } from "../types/auth.types";
 import { storage } from "../utils/storage";
 import authApi from "../api/authApi";
-import { ROUTES } from "../utils/constants";
+import { ROUTES, ROLES } from "../utils/constants";
 
-/**
- * Extract error message from various error types
- */
 function getErrorMessage(error: unknown): string {
 	if (error instanceof AxiosError) {
 		const statusCode = error.response?.status;
@@ -34,24 +31,17 @@ function getErrorMessage(error: unknown): string {
 	return "Something went wrong. Please try again.";
 }
 
-/**
- * Map raw API response to AuthUser type
- */
 function mapResponseToUser(
 	response: Record<string, unknown>,
 	nationalId: string,
 ): AuthUser {
-	const user = response.user as Record<string, unknown>;
+	const user = (response.user ?? response) as Record<string, unknown>;
 
 	return {
-		id: Number(user.id) || 0,
-		name: (user.name ||
-			user.full_name ||
-			user.student_name ||
-			user.username ||
-			"") as string,
-		nationalId: (user.nationalId || user.national_id || nationalId) as string,
-		role: (user.role as "admin" | "user") || "user",
+		id: (user.id ?? 0) as string | number,
+		email: (user.email || "") as string,
+		name: (user.name || user.fullName || user.full_name || user.email || nationalId) as string,
+		role: (user.role as AuthUser["role"]) || ROLES.STUDENT,
 	};
 }
 
@@ -133,7 +123,7 @@ export const useAuthStore = create<AuthState>()(
 						password,
 						accessToken,
 					);
-					const jwt = response.token || response.accessToken || "";
+					const jwt = response.accessToken || "";
 					const mappedUser = mapResponseToUser(
 						response as unknown as Record<string, unknown>,
 						nationalId,
@@ -192,10 +182,8 @@ export const useAuthStore = create<AuthState>()(
 	),
 );
 
-/**
- * Get redirect route based on user role
- */
 export const getRedirectRoute = (user: AuthUser | null): string => {
 	if (!user) return ROUTES.LOGIN;
-	return user.role === "admin" ? ROUTES.DASHBOARD : ROUTES.HOME_PAGE;
+	if (user.role === ROLES.ADMIN) return ROUTES.ADMIN_DASHBOARD;
+	return ROUTES.HOME_PAGE;
 };

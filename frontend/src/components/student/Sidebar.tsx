@@ -1,4 +1,4 @@
-import { LogOut } from 'lucide-react';
+import { LogOut, X } from 'lucide-react';
 
 const navLinks = [
   { icon: 'grid_view', label: 'Dashboard', active: true },
@@ -16,13 +16,15 @@ const bottomLinks = [
 
 interface SidebarProps {
   onLogout: () => void;
+  isMobileOpen: boolean;
+  onMobileClose: () => void;
 }
 
-export default function Sidebar({ onLogout }: SidebarProps) {
-  return (
-    <aside className="w-64 bg-[#0a1d4a] text-white flex flex-col fixed inset-y-0 left-0 z-50">
-      <div className="p-6 flex items-center gap-3">
-        <div className="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center">
+export default function Sidebar({ onLogout, isMobileOpen, onMobileClose }: SidebarProps) {
+  const sidebarContent = (
+    <div className="flex flex-col h-full">
+      <div className="p-4 lg:p-6 flex items-center gap-3">
+        <div className="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center shrink-0">
           <span className="material-symbols-outlined text-white">school</span>
         </div>
         <div>
@@ -31,37 +33,38 @@ export default function Sidebar({ onLogout }: SidebarProps) {
         </div>
       </div>
 
-      <nav className="mt-4 flex-1 px-4 space-y-2">
+      <nav className="mt-2 lg:mt-4 flex-1 px-3 lg:px-4 space-y-1 lg:space-y-2 overflow-y-auto">
         {navLinks.map((link) => (
           <a
             key={link.label}
             href="#"
-            className={`flex items-center gap-3 px-4 py-3 rounded-r-lg transition-all ${
+            onClick={() => onMobileClose()}
+            className={`flex items-center gap-3 px-3 lg:px-4 py-2.5 lg:py-3 rounded-r-lg transition-all ${
               link.active
                 ? 'sidebar-item-active'
                 : 'opacity-70 hover:opacity-100'
             }`}
           >
-            <span className="material-symbols-outlined text-[20px]">{link.icon}</span>
+            <span className="material-symbols-outlined text-[20px] shrink-0">{link.icon}</span>
             <span className="text-sm font-medium">{link.label}</span>
           </a>
         ))}
 
-        <div className="pt-8 space-y-2">
+        <div className="pt-6 lg:pt-8 space-y-1 lg:space-y-2">
           {bottomLinks.map((link) => (
             <a
               key={link.label}
               href="#"
-              className="flex items-center gap-3 px-4 py-3 opacity-70 hover:opacity-100 transition-opacity"
+              className="flex items-center gap-3 px-3 lg:px-4 py-2.5 lg:py-3 opacity-70 hover:opacity-100 transition-opacity"
             >
-              <span className="material-symbols-outlined text-[20px]">{link.icon}</span>
+              <span className="material-symbols-outlined text-[20px] shrink-0">{link.icon}</span>
               <span className="text-sm font-medium">{link.label}</span>
             </a>
           ))}
         </div>
       </nav>
 
-      <div className="m-4 p-5 bg-blue-900/40 rounded-2xl relative overflow-hidden">
+      <div className="mx-3 lg:mx-4 mb-2 lg:mb-4 p-4 lg:p-5 bg-blue-900/40 rounded-2xl relative overflow-hidden hidden lg:block">
         <div className="relative z-10">
           <p className="text-sm font-semibold mb-1">
             Keep learning,<br />keep growing!
@@ -77,15 +80,37 @@ export default function Sidebar({ onLogout }: SidebarProps) {
         </div>
       </div>
 
-      <div className="p-4 border-t border-blue-800/50">
+      <div className="p-3 lg:p-4 border-t border-blue-800/50">
         <button
           onClick={onLogout}
-          className="flex items-center gap-2 px-4 py-2 w-full text-sm text-white/70 hover:text-white hover:bg-blue-800/30 rounded-lg transition-colors"
+          className="flex items-center gap-2 px-3 lg:px-4 py-2 w-full text-sm text-white/70 hover:text-white hover:bg-blue-800/30 rounded-lg transition-colors"
         >
-          <LogOut className="w-4 h-4" />
+          <LogOut className="w-4 h-4 shrink-0" />
           <span>Logout</span>
         </button>
       </div>
-    </aside>
+    </div>
+  );
+
+  return (
+    <>
+      <aside className="hidden md:flex w-64 bg-[#0a1d4a] text-white flex-col fixed inset-y-0 left-0 z-50">
+        {sidebarContent}
+      </aside>
+
+      {isMobileOpen && (
+        <div className="fixed inset-0 z-50 md:hidden">
+          <div className="absolute inset-0 bg-black/50" onClick={onMobileClose} />
+          <aside className="relative w-72 bg-[#0a1d4a] text-white flex flex-col h-full max-w-[85vw]">
+            <div className="absolute top-4 right-4 z-10">
+              <button onClick={onMobileClose} className="text-white/70 hover:text-white p-1">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            {sidebarContent}
+          </aside>
+        </div>
+      )}
+    </>
   );
 }

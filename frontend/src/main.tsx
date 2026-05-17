@@ -11,6 +11,7 @@ import Home from './components/Home.tsx'
 import Register from './components/Register.tsx'
 import { ProtectedRoute } from './components/ProtectedRoute.tsx'
 import { RoleGuard } from './components/RoleGuard.tsx'
+import { AdminRoute } from './components/admin/AdminRoute.tsx'
 import { useAuthStore } from './store/authStore.ts'
 import { ROUTES } from './utils/constants.ts'
 
@@ -54,6 +55,14 @@ createRoot(document.getElementById('root')!).render(
           <Route path={ROUTES.HOME} element={<App />} />
           <Route path={ROUTES.LOGIN} element={<LoginPage />} />
           <Route path={ROUTES.SET_PASSWORD} element={<SetPassword />} />
+          <Route
+            path={`${ROUTES.ADMIN_DASHBOARD}/*`}
+            element={
+              <AdminRoute>
+                <Dashboard />
+              </AdminRoute>
+            }
+          />
           <Route
             path={ROUTES.DASHBOARD}
             element={

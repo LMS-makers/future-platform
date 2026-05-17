@@ -1,8 +1,8 @@
 export interface AuthUser {
-  id: number;
-  name: string;
-  nationalId: string;
-  role: 'admin' | 'user';
+  id: number | string;
+  email: string;
+  name?: string;
+  role: 'admin' | 'doctor' | 'student';
 }
 
 export interface InitLoginResponse {
@@ -11,8 +11,7 @@ export interface InitLoginResponse {
 }
 
 export interface LoginResponse {
-  token: string;
-  accessToken?: string;
+  accessToken: string;
   user: AuthUser;
 }
 
@@ -35,4 +34,17 @@ export interface SetPasswordRequest {
 export interface ApiError {
   message: string;
   statusCode?: number;
+}
+
+export interface AdminUser {
+  id: string;
+  full_name: string;
+  email: string;
+  role: string;
+  phone?: string;
+  national_id?: string;
+  date_of_birth?: string;
+  address?: string;
+  gender?: string;
+  avatar?: string;
 }
