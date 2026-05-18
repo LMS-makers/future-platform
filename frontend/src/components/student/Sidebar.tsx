@@ -84,19 +84,6 @@ export default function Sidebar({ onLogout, isMobileOpen, onMobileClose }: Sideb
           ))}
         </div>
 
-        {/* Promo card */}
-        <div className="mx-3 lg:mx-4 mb-2 lg:mb-4 p-3 lg:p-4 bg-blue-900/40 rounded-2xl hidden lg:block">
-          <p className="text-xs lg:text-sm font-semibold mb-1 leading-snug" dangerouslySetInnerHTML={{ __html: t('keepLearning') }} />
-          <p className="text-[10px] lg:text-[11px] opacity-70 mb-3">{t('doingGreat')}</p>
-          <div className="flex justify-center">
-            <img
-              alt="Education illustration"
-              className="w-20 h-auto drop-shadow-lg"
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuBnFdncGcSkBHU4E5QQMj5V4EFVH7Nlrn3G49YLuXwsLE3AdEcLowieVLutf2YI_wvn0HgyPXvlcmiWPNBXhoSHkxg1hP0ElyyOzJyxIFLxq4SBbiDY1wAQZtZzalihAIK8dtrYO2bt1zJbIRvJB_GpzEv4AeYpniSow4ebDJIf8OiNgG_sbCkkl2lS2rYmL1uSc4zaWucleJUq85yP4C2xDXv38FitEdyYn5F-zlmhZDOoYHixeXTqrlSB4jZmFcGDLe8Yjv4rGw"
-            />
-          </div>
-        </div>
-
         {/* Logout */}
         <div className="p-3 lg:p-4 border-t border-blue-800/50">
           <button
