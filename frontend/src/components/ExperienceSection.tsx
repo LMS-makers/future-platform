@@ -1,28 +1,31 @@
 import { motion } from 'framer-motion';
 import { Code2, Brain, Users } from 'lucide-react';
-
-const experiences = [
-  {
-    icon: Code2,
-    title: 'Hands-on Coding',
-    description: 'Write real code from day one. Our project-based curriculum ensures you build a professional portfolio before graduation.',
-    color: 'from-blue-500 to-primary-700',
-  },
-  {
-    icon: Brain,
-    title: 'AI Integration',
-    description: 'Learn to leverage AI tools and integrate machine learning into your applications. Stay ahead in the AI revolution.',
-    color: 'from-purple-500 to-primary-700',
-  },
-  {
-    icon: Users,
-    title: 'Collaborative Projects',
-    description: 'Work in teams on real-world projects. Develop communication, leadership, and agile teamwork skills employers value.',
-    color: 'from-green-500 to-primary-700',
-  },
-];
+import { useTranslation } from 'react-i18next';
 
 export default function ExperienceSection() {
+  const { t } = useTranslation('landing');
+
+  const experiences = [
+    {
+      icon: Code2,
+      title: t('handsOnCoding'),
+      description: t('handsOnCodingDesc'),
+      color: 'from-blue-500 to-primary-700',
+    },
+    {
+      icon: Brain,
+      title: t('aiIntegration'),
+      description: t('aiIntegrationDesc'),
+      color: 'from-purple-500 to-primary-700',
+    },
+    {
+      icon: Users,
+      title: t('collaborativeProjects'),
+      description: t('collaborativeProjectsDesc'),
+      color: 'from-green-500 to-primary-700',
+    },
+  ];
+
   return (
     <section className="py-20 bg-gradient-to-br from-primary-900 via-primary-800 to-primary-900 relative overflow-hidden">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,_var(--tw-gradient-stops))] from-primary-700/20 via-transparent to-transparent" />
@@ -34,12 +37,12 @@ export default function ExperienceSection() {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <span className="text-primary-400 font-semibold text-sm uppercase tracking-wider">Student Experience</span>
+          <span className="text-primary-400 font-semibold text-sm uppercase tracking-wider">{t('studentExperience')}</span>
           <h2 className="text-3xl font-semibold text-white mt-2">
-            Learn by Doing
+            {t('learnByDoing')}
           </h2>
           <p className="text-neutral-300 mt-4 max-w-2xl mx-auto">
-            Our approach combines theory with practice, ensuring you graduate with real skills and confidence.
+            {t('experienceDescription')}
           </p>
         </motion.div>
 

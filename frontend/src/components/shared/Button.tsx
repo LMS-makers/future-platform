@@ -27,10 +27,10 @@ export default function Button({
   const baseStyles = 'inline-flex items-center justify-center font-bold transition-all duration-300';
 
   const variantStyles = {
-    primary: 'bg-brand-navy text-white hover:bg-brand-blue border-2 border-white/20',
-    secondary: 'bg-brand-blue text-white hover:bg-blue-600',
-    outline: 'border-2 border-brand-accent/50 text-white bg-brand-blue/20 hover:bg-brand-blue/40',
-    ghost: 'text-white hover:text-brand-accent'
+    primary: 'bg-primary-700 text-white hover:bg-primary-800 border-2 border-white/20',
+    secondary: 'bg-primary-800 text-white hover:bg-primary-900',
+    outline: 'border-2 border-white/20 text-white bg-primary-900/20 hover:bg-primary-900/40',
+    ghost: 'text-white hover:text-primary-400'
   };
 
   const sizeStyles = {

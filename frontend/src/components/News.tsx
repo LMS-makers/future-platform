@@ -1,13 +1,15 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { ArrowRight, ChevronUp } from "lucide-react";
+import { useTranslation } from 'react-i18next';
 import { type NewsArticle, defaultNewsArticles } from "../data/newsData";
 
 function NewsCard({ item }: { item: NewsArticle }) {
 	const [expanded, setExpanded] = useState(false);
+	const { t } = useTranslation('landing');
 
 	return (
-		<div className="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 h-full">
+		<div className="bg-surface-card rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 h-full">
 			<div className="relative overflow-hidden">
 				<img
 					src={item.image}
@@ -21,13 +23,13 @@ function NewsCard({ item }: { item: NewsArticle }) {
 				</span>
 			</div>
 			<div className="p-6">
-				<time className="text-neutral-500 text-xs">{item.date}</time>
-				<h3 className="text-lg font-bold text-neutral-900 mt-2 mb-2">
+				<time className="text-text-tertiary text-xs">{item.date}</time>
+				<h3 className="text-lg font-bold text-text-primary mt-2 mb-2">
 					{item.title}
 				</h3>
 				<div className="mb-4 overflow-hidden">
 					<p
-						className={`text-neutral-700 text-sm leading-relaxed transition-all duration-300 ${expanded ? "" : "line-clamp-3"}`}
+						className={`text-text-secondary text-sm leading-relaxed transition-all duration-300 ${expanded ? "" : "line-clamp-3"}`}
 					>
 						{item.fullContent}
 					</p>
@@ -37,7 +39,7 @@ function NewsCard({ item }: { item: NewsArticle }) {
 					onClick={() => setExpanded(!expanded)}
 					className="inline-flex items-center gap-2 text-primary-700 hover:text-primary-800 font-medium text-sm transition-colors duration-200"
 				>
-					{expanded ? "Show Less" : "Read More"}
+					{expanded ? t('showLess') : t('readMore')}
 					{expanded ? (
 						<ChevronUp size={14} className="transition-transform" />
 					) : (
@@ -50,8 +52,10 @@ function NewsCard({ item }: { item: NewsArticle }) {
 }
 
 export default function News() {
+	const { t } = useTranslation('landing');
+
 	return (
-		<section id="news" className="py-20 lg:py-28 bg-neutral-100">
+		<section id="news" className="py-20 lg:py-28 bg-surface-alt">
 			<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 				<motion.div
 					initial={{ opacity: 0, y: 20 }}
@@ -60,10 +64,10 @@ export default function News() {
 					className="text-center mb-16"
 				>
 					<span className="text-primary-700 font-semibold text-sm uppercase tracking-wider">
-						Latest Updates
+						{t('latestUpdates')}
 					</span>
-					<h2 className="text-3xl lg:text-4xl font-bold text-neutral-900 mt-2">
-						News & Events
+					<h2 className="text-3xl lg:text-4xl font-bold text-text-primary mt-2">
+						{t('newsEvents')}
 					</h2>
 				</motion.div>
 

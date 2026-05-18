@@ -1,7 +1,9 @@
-import { StrictMode, useEffect } from 'react'
+import { StrictMode, useEffect, useState } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
+import { useTranslation } from 'react-i18next'
+import './i18n/index.ts'
 import './index.css'
 import App from './App.tsx'
 import LoginPage from './components/LoginPage.tsx'
@@ -14,6 +16,31 @@ import { RoleGuard } from './components/RoleGuard.tsx'
 import { AdminRoute } from './components/admin/AdminRoute.tsx'
 import { useAuthStore } from './store/authStore.ts'
 import { ROUTES } from './utils/constants.ts'
+import FloatingControls from './i18n/FloatingControls.tsx'
+import { ThemeProvider } from './contexts/ThemeContext.tsx'
+
+function LanguageWatcher({ children }: { children: React.ReactNode }) {
+  const { i18n } = useTranslation();
+  const [, forceUpdate] = useState(0);
+
+  useEffect(() => {
+    document.documentElement.lang = i18n.language;
+    document.documentElement.dir = i18n.dir();
+
+    const handleLanguageChanged = (lng: string) => {
+      document.documentElement.lang = lng;
+      document.documentElement.dir = i18n.dir();
+      forceUpdate((n) => n + 1);
+    };
+
+    i18n.on('languageChanged', handleLanguageChanged);
+    return () => {
+      i18n.off('languageChanged', handleLanguageChanged);
+    };
+  }, [i18n]);
+
+  return <>{children}</>;
+}
 
 export function AuthInitializer({ children }: { children: React.ReactNode }) {
   const initializeAuth = useAuthStore((state) => state.initializeAuth);
@@ -28,67 +55,72 @@ export function AuthInitializer({ children }: { children: React.ReactNode }) {
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>
-      <AuthInitializer>
-        <Toaster
-          position="top-right"
-          toastOptions={{
-            duration: 4000,
-            style: {
-              background: '#363636',
-              color: '#fff',
-            },
-            success: {
-              iconTheme: {
-                primary: '#10B981',
-                secondary: '#fff',
-              },
-            },
-            error: {
-              iconTheme: {
-                primary: '#EF4444',
-                secondary: '#fff',
-              },
-            },
-          }}
-        />
-        <Routes>
-          <Route path={ROUTES.HOME} element={<App />} />
-          <Route path={ROUTES.LOGIN} element={<LoginPage />} />
-          <Route path={ROUTES.SET_PASSWORD} element={<SetPassword />} />
-          <Route
-            path={`${ROUTES.ADMIN_DASHBOARD}/*`}
-            element={
-              <AdminRoute>
-                <Dashboard />
-              </AdminRoute>
-            }
-          />
-          <Route
-            path={ROUTES.DASHBOARD}
-            element={
-              <ProtectedRoute>
-                <Dashboard />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path={ROUTES.HOME_PAGE}
-            element={
-              <ProtectedRoute>
-                <Home />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path={ROUTES.REGISTER}
-            element={
-              <RoleGuard allowedRoles={['admin']}>
-                <Register />
-              </RoleGuard>
-            }
-          />
-        </Routes>
-      </AuthInitializer>
+      <LanguageWatcher>
+        <AuthInitializer>
+          <ThemeProvider>
+            <Toaster
+              position="top-right"
+              toastOptions={{
+                duration: 4000,
+                style: {
+                  background: '#363636',
+                  color: '#fff',
+                },
+                success: {
+                  iconTheme: {
+                    primary: '#10B981',
+                    secondary: '#fff',
+                  },
+                },
+                error: {
+                  iconTheme: {
+                    primary: '#EF4444',
+                    secondary: '#fff',
+                  },
+                },
+              }}
+            />
+            <Routes>
+              <Route path={ROUTES.HOME} element={<App />} />
+              <Route path={ROUTES.LOGIN} element={<LoginPage />} />
+              <Route path={ROUTES.SET_PASSWORD} element={<SetPassword />} />
+              <Route
+                path={`${ROUTES.ADMIN_DASHBOARD}/*`}
+                element={
+                  <AdminRoute>
+                    <Dashboard />
+                  </AdminRoute>
+                }
+              />
+              <Route
+                path={ROUTES.DASHBOARD}
+                element={
+                  <ProtectedRoute>
+                    <Dashboard />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path={ROUTES.HOME_PAGE}
+                element={
+                  <ProtectedRoute>
+                    <Home />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path={ROUTES.REGISTER}
+                element={
+                  <RoleGuard allowedRoles={['admin']}>
+                    <Register />
+                  </RoleGuard>
+                }
+              />
+            </Routes>
+            <FloatingControls />
+          </ThemeProvider>
+        </AuthInitializer>
+      </LanguageWatcher>
     </BrowserRouter>
   </StrictMode>,
 )

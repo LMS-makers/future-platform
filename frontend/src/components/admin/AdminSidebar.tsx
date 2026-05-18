@@ -1,21 +1,7 @@
+import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { GraduationCap, LayoutDashboard, Users, BookOpen, Library, ClipboardList, BarChart3, Settings, LifeBuoy, LogOut, X } from 'lucide-react';
 import { useAuthStore } from '../../store/authStore';
-
-const mainLinks = [
-  { icon: LayoutDashboard, label: 'Dashboard', path: '/admin/dashboard' },
-  { icon: Users, label: 'User', path: '/admin/dashboard/users' },
-  { icon: GraduationCap, label: 'Academic', path: '/admin/dashboard/academic' },
-  { icon: BookOpen, label: 'Courses', path: '/admin/dashboard/courses' },
-  { icon: Library, label: 'Materials', path: '/admin/dashboard/materials' },
-  { icon: ClipboardList, label: 'Tasks', path: '/admin/dashboard/tasks' },
-  { icon: BarChart3, label: 'Analytics', path: '/admin/dashboard/analytics' },
-];
-
-const bottomLinks = [
-  { icon: Settings, label: 'Settings', path: '/admin/dashboard/settings' },
-  { icon: LifeBuoy, label: 'Support', path: '/admin/dashboard/support' },
-];
 
 interface AdminSidebarProps {
   isMobileOpen: boolean;
@@ -26,6 +12,22 @@ export default function AdminSidebar({ isMobileOpen, onMobileClose }: AdminSideb
   const location = useLocation();
   const navigate = useNavigate();
   const { logout } = useAuthStore();
+  const { t } = useTranslation('dashboard');
+
+  const mainLinks = [
+    { icon: LayoutDashboard, label: t('dashboard'), path: '/admin/dashboard' },
+    { icon: Users, label: t('user'), path: '/admin/dashboard/users' },
+    { icon: GraduationCap, label: t('academic'), path: '/admin/dashboard/academic' },
+    { icon: BookOpen, label: t('courses'), path: '/admin/dashboard/courses' },
+    { icon: Library, label: t('materials'), path: '/admin/dashboard/materials' },
+    { icon: ClipboardList, label: t('tasks'), path: '/admin/dashboard/tasks' },
+    { icon: BarChart3, label: t('analytics'), path: '/admin/dashboard/analytics' },
+  ];
+
+  const bottomLinks = [
+    { icon: Settings, label: t('settings'), path: '/admin/dashboard/settings' },
+    { icon: LifeBuoy, label: t('support'), path: '/admin/dashboard/support' },
+  ];
 
   const isActive = (path: string) => location.pathname.startsWith(path);
 
@@ -48,7 +50,7 @@ export default function AdminSidebar({ isMobileOpen, onMobileClose }: AdminSideb
           </div>
           <div>
             <div className="font-bold text-lg leading-tight tracking-wide">HICIT</div>
-            <div className="text-[10px] text-neutral-300 tracking-wider">FUTURE ACADEMY</div>
+            <div className="text-[10px] text-neutral-300 tracking-wider">{t('futureAcademy')}</div>
           </div>
         </div>
       </div>
@@ -96,7 +98,7 @@ export default function AdminSidebar({ isMobileOpen, onMobileClose }: AdminSideb
           className="flex items-center px-4 lg:px-6 py-2.5 lg:py-3 text-sm font-medium text-neutral-300 hover:bg-primary-800 hover:text-white transition-colors w-full text-left"
         >
           <LogOut className="w-5 h-5 mr-3 shrink-0 text-neutral-400" />
-          Logout
+          {t('logout')}
         </button>
       </div>
     </div>

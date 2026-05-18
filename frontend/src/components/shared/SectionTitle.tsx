@@ -28,14 +28,14 @@ export default function SectionTitle({
 
   return (
     <div className={`mb-16 ${alignmentStyles[alignment]} ${className}`}>
-      <h2 className="text-brand-navy text-4xl font-extrabold relative inline-block">
+      <h2 className="text-primary-800 text-4xl font-extrabold relative inline-block dark:text-primary-400">
         {title}
         {showLine && (
-          <div className={`absolute -bottom-3 w-24 h-1 bg-brand-blue ${linePositionStyles[linePosition]}`} />
+          <div className={`absolute -bottom-3 w-24 h-1 bg-primary-600 ${linePositionStyles[linePosition]}`} />
         )}
       </h2>
       {subtitle && (
-        <p className="text-brand-blue font-semibold text-lg mt-2">{subtitle}</p>
+        <p className="text-primary-600 font-semibold text-lg mt-2">{subtitle}</p>
       )}
     </div>
   );

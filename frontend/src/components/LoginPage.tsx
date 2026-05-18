@@ -1,30 +1,16 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { GraduationCap, ArrowRight, Moon, Sun, Lock, Loader2, AlertCircle } from 'lucide-react';
+import { GraduationCap, ArrowRight, Lock, Loader2, AlertCircle } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { AxiosError } from 'axios';
+import { useTranslation } from 'react-i18next';
 import { useAuthStore, getRedirectRoute } from '../store/authStore';
 import { storage } from '../utils/storage';
-
-function getErrorMessage(error: unknown): string {
-  if (error instanceof AxiosError) {
-    if (error.response?.status === 404) {
-      return 'User not found. Please return to admin.';
-    }
-    if (error.response?.status === 401) {
-      return 'Invalid credentials. Please try again.';
-    }
-    return error.response?.data?.message || 'Something went wrong. Please try again.';
-  }
-  if (error instanceof Error) {
-    return error.message;
-  }
-  return 'Something went wrong. Please try again.';
-}
 
 type LoginStep = 'nationalId' | 'password';
 
 export default function LoginPage() {
+  const { t } = useTranslation('auth');
   const [nationalId, setNationalId] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -37,6 +23,22 @@ export default function LoginPage() {
   const navigate = useNavigate();
   const { initLogin, login, isAuthenticated, user } = useAuthStore();
 
+  function getErrorMessage(error: unknown): string {
+    if (error instanceof AxiosError) {
+      if (error.response?.status === 404) {
+        return t('userNotFound');
+      }
+      if (error.response?.status === 401) {
+        return t('invalidCredentials');
+      }
+      return error.response?.data?.message || t('genericError');
+    }
+    if (error instanceof Error) {
+      return error.message;
+    }
+    return t('genericError');
+  }
+
   useEffect(() => {
     if (isAuthenticated && user) {
       const redirect = getRedirectRoute(user);
@@ -47,7 +49,7 @@ export default function LoginPage() {
   const handleNationalIdSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!nationalId.trim()) {
-      setError('Please enter your National ID');
+      setError(t('pleaseEnterNationalId'));
       return;
     }
 
@@ -80,7 +82,7 @@ export default function LoginPage() {
   const handlePasswordSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!password.trim()) {
-      setError('Please enter your password');
+      setError(t('pleaseEnterPassword'));
       return;
     }
 
@@ -89,7 +91,7 @@ export default function LoginPage() {
 
     try {
       const user = await login(nationalId, password, accessToken);
-      toast.success(`Welcome back, ${user.name || user.email}!`);
+      toast.success(t('loginSuccess', { name: user.name || user.email }));
       const redirect = getRedirectRoute(user);
       navigate(redirect, { replace: true });
     } catch (err: unknown) {
@@ -120,31 +122,31 @@ return (
       <div className="relative z-10 w-full max-w-4xl bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/50 dark:border-slate-700/50 overflow-hidden flex flex-col md:flex-row">
         <div className="w-full md:w-1/2 p-8 sm:p-10 md:p-12 flex flex-col justify-center">
           <div className="mb-8">
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight flex items-center gap-2 mb-6">
-              <GraduationCap className="w-7 h-7 text-blue-600 dark:text-blue-400" />
-              <span className="text-blue-600 dark:text-blue-400">HICIT</span>
-            </h1>
-            <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 dark:text-white mb-3">Welcome Back</h2>
-            <p className="text-slate-500 dark:text-slate-400 text-base">Enter your credentials to access your account.</p>
+              <h1 className="text-2xl sm:text-3xl font-extrabold text-text-primary tracking-tight flex items-center gap-2 mb-6">
+                <GraduationCap className="w-7 h-7 text-blue-600 dark:text-blue-400" />
+                <span className="text-blue-600 dark:text-blue-400">{t('hicit')}</span>
+              </h1>
+              <h2 className="text-3xl sm:text-4xl font-bold text-text-primary mb-3">{t('welcomeBack')}</h2>
+              <p className="text-text-tertiary text-base">{t('enterCredentials')}</p>
           </div>
 
           {step === 'nationalId' ? (
             <form className="space-y-5" onSubmit={handleNationalIdSubmit}>
               <div>
-                <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">National ID</label>
+                <label className="block text-xs font-semibold text-text-tertiary uppercase tracking-wider mb-2">{t('nationalId')}</label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
-                    <svg className="w-5 h-5 text-slate-400 dark:text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-5 h-5 text-text-tertiary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                     </svg>
                   </div>
                   <input
-                    className="w-full pl-12 pr-4 py-3.5 bg-white dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600 rounded-xl text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:shadow-lg focus:shadow-blue-500/20 transition-all duration-200"
+                    className="w-full pl-12 pr-4 py-3.5 bg-input-bg border-border-input rounded-xl text-text-primary placeholder-input-placeholder focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:shadow-lg transition-all duration-200"
                     type="text"
                     value={nationalId}
                     onChange={(e) => setNationalId(e.target.value)}
                     disabled={loading}
-                    placeholder="Enter your national ID"
+                    placeholder={t('enterNationalId')}
                   />
                 </div>
               </div>
@@ -170,8 +172,8 @@ return (
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                     </svg>
                   </div>
-                  <span className="ml-3 text-sm text-slate-600 dark:text-slate-400 group-hover:text-blue-600 dark:group-hover:text-blue-300 transition-colors">
-                    Remember me
+                  <span className="ml-3 text-sm text-text-tertiary group-hover:text-blue-600 dark:group-hover:text-blue-300 transition-colors">
+                    {t('rememberMe')}
                   </span>
                 </label>
                 <button 
@@ -179,45 +181,46 @@ return (
                   className="text-sm font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors"
                   onClick={() => setShowForgotPopup(true)}
                 >
-                  Forgot password?
+                  {t('forgotPassword')}
                 </button>
               </div>
 
               <button
-                className="w-full bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white py-3.5 px-6 rounded-xl font-semibold text-base flex items-center justify-center gap-2 transition-all duration-200 shadow-lg shadow-blue-600/25 hover:shadow-xl hover:shadow-blue-600/30 active:shadow-md disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-lg"
-                type="submit"
-                disabled={loading}
-              >
-                {loading ? (
-                  <Loader2 className="w-5 h-5 animate-spin" />
-                ) : (
-                  <>
-                    <span>Continue</span>
-                    <ArrowRight className="w-5 h-5" />
-                  </>
-                )}
-              </button>
-            </form>
-          ) : (
-            <form className="space-y-5" onSubmit={handlePasswordSubmit}>
-              <div>
-                <label className="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">Password</label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
-                    <Lock className="w-5 h-5 text-slate-400 dark:text-slate-500" />
-                  </div>
-                  <input
-                    className="w-full pl-12 pr-12 py-3.5 bg-white dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600 rounded-xl text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:shadow-lg focus:shadow-blue-500/20 transition-all duration-200"
+              className="w-full bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white py-3.5 px-6 rounded-xl font-semibold text-base flex items-center justify-center gap-2 transition-all duration-200 shadow-lg hover:shadow-xl active:shadow-md disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-lg"
+              type="submit"
+              disabled={loading}
+            >
+              {loading ? (
+                <Loader2 className="w-5 h-5 animate-spin" />
+              ) : (
+                <>
+                  <span>{t('continue')}</span>
+                  <ArrowRight className="w-5 h-5" />
+                </>
+              )}
+            </button>
+          </form>
+        ) : (
+          <form className="space-y-5" onSubmit={handlePasswordSubmit}>
+            <div>
+              <label className="block text-xs font-semibold text-text-tertiary uppercase tracking-wider mb-2">{t('password')}</label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
+                  <Lock className="w-5 h-5 text-text-tertiary" />
+                </div>
+                <input
+                  className="w-full pl-12 pr-12 py-3.5 bg-input-bg border-border-input rounded-xl text-text-primary placeholder-input-placeholder focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:shadow-lg transition-all duration-200"
                     type={showPassword ? 'text' : 'password'}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     disabled={loading}
-                    placeholder="Enter your password"
+                    placeholder={t('enterPassword')}
                   />
                   <button
                     type="button"
-                    className="absolute inset-y-0 right-4 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"
+                    className="absolute inset-y-0 right-4 flex items-center text-text-tertiary hover:text-text-secondary dark:hover:text-text-secondary"
                     onClick={() => setShowPassword(!showPassword)}
+                    aria-label={showPassword ? t('hidePassword') : t('showPassword')}
                   >
                     {showPassword ? (
                       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -240,35 +243,35 @@ return (
               )}
 
               <button
-                className="w-full bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white py-3.5 px-6 rounded-xl font-semibold text-base flex items-center justify-center gap-2 transition-all duration-200 shadow-lg shadow-blue-600/25 hover:shadow-xl hover:shadow-blue-600/30 active:shadow-md disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-lg"
-                type="submit"
-                disabled={loading}
-              >
-                {loading ? (
-                  <Loader2 className="w-5 h-5 animate-spin" />
-                ) : (
-                  <>
-                    <span>Sign in</span>
-                    <ArrowRight className="w-5 h-5" />
-                  </>
-                )}
-              </button>
+              className="w-full bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white py-3.5 px-6 rounded-xl font-semibold text-base flex items-center justify-center gap-2 transition-all duration-200 shadow-lg hover:shadow-xl active:shadow-md disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-lg"
+              type="submit"
+              disabled={loading}
+            >
+              {loading ? (
+                <Loader2 className="w-5 h-5 animate-spin" />
+              ) : (
+                <>
+                  <span>{t('signIn')}</span>
+                  <ArrowRight className="w-5 h-5" />
+                </>
+              )}
+            </button>
 
-              <button
-                type="button"
-                onClick={handleBack}
-                className="w-full text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-300 text-sm font-medium py-2 transition-colors"
+            <button
+              type="button"
+              onClick={handleBack}
+              className="w-full text-text-tertiary hover:text-blue-600 dark:hover:text-blue-300 text-sm font-medium py-2 transition-colors"
               >
-                ← Back to enter National ID
+                {t('backToNationalId')}
               </button>
             </form>
           )}
 
           <div className="mt-8 text-center">
-            <p className="text-sm text-slate-500 dark:text-slate-400">
-              New to the platform?{' '}
+            <p className="text-sm text-text-tertiary">
+              {t('newToPlatform')}{' '}
               <a className="text-blue-600 dark:text-blue-400 font-semibold hover:text-blue-700 dark:hover:text-blue-300 transition-colors" href="#">
-                Request access
+                {t('requestAccess')}
               </a>
             </p>
           </div>
@@ -277,8 +280,8 @@ return (
         <div className="hidden md:flex w-1/2 bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 dark:from-slate-800 dark:via-slate-800 dark:to-slate-900 relative overflow-hidden">
           <div className="absolute inset-0 opacity-30 dark:opacity-90">
             <div className="absolute top-16 right-8 text-right">
-              <h3 className="text-5xl font-light text-white dark:text-white/80 tracking-widest mb-2">HICIT</h3>
-              <p className="text-2xl text-white/70 dark:text-white/60">Future Platform</p>
+              <h3 className="text-5xl font-light text-white dark:text-white/80 tracking-widest mb-2">{t('hicit')}</h3>
+              <p className="text-2xl text-white/70 dark:text-white/60">{t('futurePlatform')}</p>
             </div>
             <div className="absolute bottom-0 left-0 w-3/4 h-2/3 flex items-end">
               <div className="w-full h-full relative">
@@ -300,33 +303,25 @@ return (
             className="absolute inset-0 bg-black/50 dark:bg-black/70 backdrop-blur-sm"
             onClick={() => setShowForgotPopup(false)}
           ></div>
-          <div className="relative bg-white dark:bg-slate-800 rounded-2xl shadow-2xl p-8 max-w-sm w-full border border-slate-200 dark:border-slate-700">
+          <div className="relative bg-surface-card rounded-2xl shadow-2xl p-8 max-w-sm w-full border-border">
             <div className="flex flex-col items-center text-center">
               <div className="w-16 h-16 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mb-4">
                 <AlertCircle className="w-8 h-8 text-red-600 dark:text-red-400" />
               </div>
-              <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">Return To The Admin</h3>
-              <p className="text-slate-500 dark:text-slate-400 mb-6">
-                Please contact your system administrator to reset your password.
+              <h3 className="text-xl font-bold text-text-primary mb-2">{t('returnToAdmin')}</h3>
+              <p className="text-text-tertiary mb-6">
+                {t('contactAdmin')}
               </p>
               <button
                 className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-xl font-semibold transition-colors"
                 onClick={() => setShowForgotPopup(false)}
               >
-                OK
+                {t('ok')}
               </button>
             </div>
           </div>
         </div>
       )}
-
-      <button
-        className="fixed bottom-6 right-6 p-3 bg-white/80 dark:bg-slate-700/80 backdrop-blur-sm rounded-full shadow-lg text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-600 transition-all duration-200"
-        onClick={() => document.documentElement.classList.toggle('dark')}
-      >
-        <Moon className="w-5 h-5 block dark:hidden" />
-        <Sun className="w-5 h-5 hidden dark:block" />
-      </button>
     </div>
   );
 }

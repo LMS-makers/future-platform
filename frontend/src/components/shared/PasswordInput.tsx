@@ -26,20 +26,20 @@ export default function PasswordInput({
 	return (
 		<div>
 			<label
-				className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2"
+				className="block text-sm font-semibold text-text-secondary mb-2"
 				htmlFor={id}
 			>
 				{label}
 			</label>
 			<div className="relative">
-				<div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400 dark:text-slate-500">
+				<div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-text-tertiary">
 					<Lock size={18} />
 				</div>
 				<input
-					className={`block w-full pl-10 pr-10 py-3.5 bg-white dark:bg-slate-700/50 border rounded-xl text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:border-transparent focus:shadow-lg transition-all duration-200 sm:text-base font-medium ${
+					className={`block w-full pl-10 pr-10 py-3.5 bg-input-bg border rounded-xl text-text-primary placeholder-input-placeholder focus:outline-none focus:ring-2 focus:border-transparent focus:shadow-lg transition-all duration-200 sm:text-base font-medium ${
 						error
 							? "border-red-500 focus:ring-red-500 focus:shadow-red-500/20"
-							: "border-slate-200 dark:border-slate-600 focus:ring-blue-500 focus:shadow-blue-500/20"
+							: "border-border-input focus:ring-blue-500 focus:shadow-blue-500/20"
 					}`}
 					id={id}
 					type={showPassword ? "text" : "password"}
@@ -50,7 +50,7 @@ export default function PasswordInput({
 				/>
 				<button
 					type="button"
-					className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"
+					className="absolute inset-y-0 right-0 pr-3 flex items-center text-text-tertiary hover:text-text-secondary"
 					onClick={onToggleShow}
 					disabled={disabled}
 				>

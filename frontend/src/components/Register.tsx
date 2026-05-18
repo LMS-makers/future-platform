@@ -4,8 +4,10 @@ import { GraduationCap, ArrowLeft, Loader2, User, Mail, Shield } from 'lucide-re
 import { toast } from 'react-hot-toast';
 import authApi from '../api/authApi';
 import { useAuthStore } from '../store/authStore';
+import { useTranslation } from 'react-i18next';
 
 export default function Register() {
+  const { t } = useTranslation('auth');
   const [name, setName] = useState('');
   const [nationalId, setNationalId] = useState('');
   const [role, setRole] = useState<'admin' | 'user'>('user');
@@ -18,12 +20,12 @@ export default function Register() {
     setError('');
 
     if (!name.trim()) {
-      setError('Please enter a name');
+      setError(t('pleaseEnterName'));
       return;
     }
 
     if (!nationalId.trim()) {
-      setError('Please enter a National ID');
+      setError(t('pleaseEnterNationalId'));
       return;
     }
 
@@ -35,12 +37,12 @@ export default function Register() {
         nationalId: nationalId.trim(),
         role,
       });
-      toast.success('User created successfully!');
+      toast.success(t('userCreatedSuccess'));
       setName('');
       setNationalId('');
       setRole('user');
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : 'Failed to create user. Please try again.';
+      const message = err instanceof Error ? err.message : t('failedToCreateUser');
       setError(message);
       toast.error(message);
     } finally {
@@ -69,27 +71,27 @@ export default function Register() {
 
         <div className="bg-[#c4d0ec] rounded-3xl w-full p-8 shadow-xl border border-white/20">
           <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold text-gray-900 mb-3">Create User</h2>
-            <p className="text-gray-600 text-sm leading-relaxed px-4">
-              Create a new user account for the platform.
+            <h2 className="text-3xl font-bold text-text-primary mb-3">{t('createUser')}</h2>
+            <p className="text-text-secondary text-sm leading-relaxed px-4">
+              {t('createUserDesc')}
             </p>
           </div>
 
           <form className="space-y-5" onSubmit={handleSubmit}>
             <div>
-              <label className="block text-sm font-semibold text-gray-800 mb-2" htmlFor="name">
-                Full Name
+              <label className="block text-sm font-semibold text-text-primary mb-2" htmlFor="name">
+                {t('fullName')}
               </label>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-text-tertiary">
                   <User size={16} />
                 </div>
                 <input
-                  className="block w-full pl-10 py-3 bg-white/90 border border-transparent rounded-xl text-gray-900 focus:ring-2 focus:ring-[#3b5998] focus:border-transparent sm:text-lg font-medium"
+                  className="block w-full pl-10 py-3 bg-white/90 border border-transparent rounded-xl text-text-primary focus:ring-2 focus:ring-[#3b5998] focus:border-transparent sm:text-lg font-medium"
                   id="name"
                   name="name"
                   type="text"
-                  placeholder="Enter full name"
+                  placeholder={t('enterFullName')}
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   disabled={loading}
@@ -98,19 +100,19 @@ export default function Register() {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-gray-800 mb-2" htmlFor="nationalId">
-                National ID
+              <label className="block text-sm font-semibold text-text-primary mb-2" htmlFor="nationalId">
+                {t('nationalId')}
               </label>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-text-tertiary">
                   <Mail size={16} />
                 </div>
                 <input
-                  className="block w-full pl-10 py-3 bg-white/90 border border-transparent rounded-xl text-gray-900 focus:ring-2 focus:ring-[#3b5998] focus:border-transparent sm:text-lg font-medium"
+                  className="block w-full pl-10 py-3 bg-white/90 border border-transparent rounded-xl text-text-primary focus:ring-2 focus:ring-[#3b5998] focus:border-transparent sm:text-lg font-medium"
                   id="nationalId"
                   name="nationalId"
                   type="text"
-                  placeholder="Enter national ID"
+                  placeholder={t('enterNationalIdPlaceholder')}
                   value={nationalId}
                   onChange={(e) => setNationalId(e.target.value)}
                   disabled={loading}
@@ -119,23 +121,23 @@ export default function Register() {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-gray-800 mb-2" htmlFor="role">
-                Role
+              <label className="block text-sm font-semibold text-text-primary mb-2" htmlFor="role">
+                {t('role')}
               </label>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-text-tertiary">
                   <Shield size={16} />
                 </div>
                 <select
-                  className="block w-full pl-10 py-3 bg-white/90 border border-transparent rounded-xl text-gray-900 focus:ring-2 focus:ring-[#3b5998] focus:border-transparent sm:text-lg font-medium"
+                  className="block w-full pl-10 py-3 bg-white/90 border border-transparent rounded-xl text-text-primary focus:ring-2 focus:ring-[#3b5998] focus:border-transparent sm:text-lg font-medium"
                   id="role"
                   name="role"
                   value={role}
                   onChange={(e) => setRole(e.target.value as 'admin' | 'user')}
                   disabled={loading}
                 >
-                  <option value="user">User</option>
-                  <option value="admin">Admin</option>
+                  <option value="user">{t('user')}</option>
+                  <option value="admin">{t('admin')}</option>
                 </select>
               </div>
             </div>
@@ -156,7 +158,7 @@ export default function Register() {
                   <Loader2 className="w-5 h-5 animate-spin" />
                 ) : (
                   <>
-                    Create User
+                    {t('createUser')}
                     <ArrowLeft className="ml-2 text-sm rotate-180" size={16} />
                   </>
                 )}
@@ -166,15 +168,15 @@ export default function Register() {
         </div>
 
         <div className="mt-8 flex gap-4">
-          <Link className="inline-flex items-center text-sm font-semibold text-gray-600 hover:text-gray-900 transition-colors" to="/dashboard">
+          <Link className="inline-flex items-center text-sm font-semibold text-text-secondary hover:text-text-primary transition-colors" to="/dashboard">
             <ArrowLeft className="mr-2" size={16} />
-            Back to Dashboard
+            {t('backToDashboard')}
           </Link>
           <button
             onClick={handleLogout}
             className="inline-flex items-center text-sm font-semibold text-red-600 hover:text-red-700 transition-colors"
           >
-            Logout
+            {t('logout')}
           </button>
         </div>
       </main>

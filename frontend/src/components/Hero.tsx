@@ -1,6 +1,7 @@
 import { useCallback } from "react";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
+import { useTranslation } from 'react-i18next';
 import {
 	fetchInstructorCount,
 	fetchCourseCount,
@@ -10,6 +11,7 @@ import { useCounted } from "../hooks/useCounted";
 import heroBg from "../assets/imgs/Hero.png";
 
 export default function Hero() {
+	const { t } = useTranslation('navbar');
 	const getCount = useCallback(fetchInstructorCount, []);
 	const getCourseCount = useCallback(fetchCourseCount, []);
 	const getStudentCount = useCallback(fetchStudentCount, []);
@@ -42,34 +44,32 @@ export default function Hero() {
 						<div className="inline-flex items-center gap-2 bg-primary-700/10 border border-primary-600/20 rounded-full px-4 py-1.5 mb-6">
 							<span className="w-2 h-2 bg-primary-400 rounded-full animate-pulse" />
 							<span className="text-primary-400 text-sm font-medium">
-								Now Enrolling 2025-2026
+								{t('nowEnrolling')}
 							</span>
 						</div>
 
 						<h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-tight mb-6">
-							Build Your Future in{" "}
+							{t('buildFuture')}{" "}
 							<span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-blue-300">
-								Tech
+								{t('tech')}
 							</span>{" "}
-							with Real Industry Experience
+							{t('withRealIndustry')}
 						</h1>
 
 						<p className="text-neutral-300 text-lg leading-relaxed mb-8 max-w-2xl mx-auto">
-							Join HICIT to gain hands-on experience, learn from industry
-							experts, and launch your career in technology with our
-							cutting-edge programs.
+							{t('heroDescription')}
 						</p>
 
 						<div className="flex flex-col sm:flex-row gap-4 justify-center">
 							<a href="/login" className="group bg-primary-700 hover:bg-primary-600 text-white px-8 py-4 rounded-xl transition-all duration-300 font-semibold text-base hover:shadow-lg hover:shadow-primary-700/30 flex items-center justify-center gap-2">
-								Apply Now
+								{t('applyNow')}
 								<ArrowRight
 									size={18}
 									className="group-hover:translate-x-1 transition-transform"
 								/>
 							</a>
 							<button className="border border-white/20 text-white hover:border-primary-400 hover:text-primary-400 px-8 py-4 rounded-xl transition-all duration-300 font-semibold text-base">
-								Explore Programs
+								{t('explorePrograms')}
 							</button>
 						</div>
 
@@ -78,21 +78,21 @@ export default function Hero() {
 								<div className="text-3xl font-bold text-white">
 									{loading ? "..." : instructorCount}+
 								</div>
-								<div className="text-primary-400/80 text-sm">Instructors</div>
+								<div className="text-primary-400/80 text-sm">{t('instructors')}</div>
 							</div>
 							<div className="w-px h-12 bg-white/20" />
 							<div>
 								<div className="text-3xl font-bold text-white">
 									{studentLoading ? "..." : studentCount}+
 								</div>
-								<div className="text-primary-400/80 text-sm">Students</div>
+								<div className="text-primary-400/80 text-sm">{t('students')}</div>
 							</div>
 							<div className="w-px h-12 bg-white/20" />
 							<div>
 								<div className="text-3xl font-bold text-white">
 									{courseLoading ? "..." : courseCount}+
 								</div>
-								<div className="text-primary-400/80 text-sm">Courses</div>
+								<div className="text-primary-400/80 text-sm">{t('courses')}</div>
 							</div>
 						</div>
 					</motion.div>

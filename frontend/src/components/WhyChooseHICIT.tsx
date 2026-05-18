@@ -1,8 +1,11 @@
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 
 export default function WhyChooseHICIT() {
+  const { t } = useTranslation('landing');
+
   return (
-    <section id="about" className="py-20 bg-neutral-100">
+    <section id="about" className="py-20 bg-surface-alt">
       <div className="max-w-7xl mx-auto px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -10,9 +13,9 @@ export default function WhyChooseHICIT() {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <span className="text-primary-700 font-semibold text-sm uppercase tracking-wider">Why Choose Us</span>
-          <h2 className="text-3xl font-semibold text-neutral-900 mt-2">
-            Why Choose HICIT?
+          <span className="text-primary-700 font-semibold text-sm uppercase tracking-wider">{t('whyChooseUs')}</span>
+          <h2 className="text-3xl font-semibold text-text-primary mt-2">
+            {t('whyChooseHicit')}
           </h2>
         </motion.div>
 
@@ -23,27 +26,24 @@ export default function WhyChooseHICIT() {
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
           >
-            <h3 className="text-2xl font-bold text-neutral-900 mb-6">
-              Excellence in Technology Education
+            <h3 className="text-2xl font-bold text-text-primary mb-6">
+              {t('excellenceInTech')}
             </h3>
-            <p className="text-neutral-500 leading-relaxed mb-6">
-              At HICIT, we combine academic rigor with practical experience. Our curriculum is designed
-              by industry professionals to ensure you graduate with skills that employers demand. From
-              day one, you'll work on real projects, collaborate with peers, and build a portfolio
-              that showcases your abilities.
+            <p className="text-text-tertiary leading-relaxed mb-6">
+              {t('whyChooseDescription')}
             </p>
             <ul className="space-y-4">
               {[
-                'Industry-aligned curriculum updated annually',
-                'Hands-on labs and real-world projects',
-                'Mentorship from tech professionals',
-                'Career placement support and internship programs',
+                t('feature1'),
+                t('feature2'),
+                t('feature3'),
+                t('feature4'),
               ].map((item, i) => (
                 <li key={i} className="flex items-start gap-3">
                   <div className="w-6 h-6 bg-primary-700/10 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
                     <span className="text-primary-700 text-xs">✓</span>
                   </div>
-                  <span className="text-neutral-700">{item}</span>
+                  <span className="text-text-secondary">{item}</span>
                 </li>
               ))}
             </ul>
@@ -57,7 +57,7 @@ export default function WhyChooseHICIT() {
           >
             <div className="relative">
               <div className="absolute -inset-4 bg-primary-700/10 rounded-2xl blur-xl" />
-              <div className="relative bg-white rounded-2xl shadow-lg overflow-hidden">
+              <div className="relative bg-surface-card rounded-2xl shadow-lg overflow-hidden">
                 {/* <img
                   src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&h=300&fit=crop"
                   alt="Professor"
@@ -73,13 +73,12 @@ export default function WhyChooseHICIT() {
                       loading="lazy"
                     />
                     <div>
-                      <h4 className="font-bold text-neutral-900">Dr. Hassan Ibrahim</h4>
+                      <h4 className="font-bold text-text-primary">Dr. Hassan Ibrahim</h4>
                       <p className="text-primary-700 text-sm">Head of Computer Science</p>
                     </div>
                   </div>
-                  <p className="text-neutral-500 text-sm leading-relaxed">
-                    "At HICIT, we don't just teach technology — we inspire innovation.
-                    Our students graduate ready to lead in the tech industry."
+                  <p className="text-text-tertiary text-sm leading-relaxed">
+                    {t('directorQuote')}
                   </p>
                 </div>
               </div>

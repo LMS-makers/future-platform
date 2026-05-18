@@ -1,17 +1,20 @@
 import { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
-
-const navLinks = [
-  { label: 'Home', href: '#home' },
-  { label: 'About', href: '#about' },
-  { label: 'News', href: '#news' },
-  { label: 'Departments', href: '#departments' },
-  { label: 'Contact', href: '#contact' },
-];
+import { useTranslation } from 'react-i18next';
+import LanguageSwitcher from '../i18n/LanguageSwitcher';
 
 export default function Navbar() {
+  const { t } = useTranslation('navbar');
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+
+  const navLinks = [
+    { label: t('home'), href: '#home' },
+    { label: t('about'), href: '#about' },
+    { label: t('news'), href: '#news' },
+    { label: t('departments'), href: '#departments' },
+    { label: t('contact'), href: '#contact' },
+  ];
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -46,16 +49,17 @@ export default function Navbar() {
             ))}
           </div>
 
-          <div className="hidden md:block">
+          <div className="hidden md:flex items-center gap-3">
+            <LanguageSwitcher />
             <a href="/login" className="bg-primary-700 hover:bg-primary-600 text-white px-5 py-2.5 rounded-lg transition-all duration-200 font-medium text-sm hover:shadow-lg hover:shadow-primary-700/30 inline-block">
-              Login to LMS
+              {t('loginToLMS')}
             </a>
           </div>
 
           <button
             className="md:hidden text-white p-2"
             onClick={() => setIsOpen(!isOpen)}
-            aria-label="Toggle menu"
+            aria-label={t('toggleMenu')}
           >
             {isOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
@@ -76,8 +80,11 @@ export default function Navbar() {
               </a>
             ))}
             <a href="/login" className="w-full bg-primary-700 hover:bg-primary-600 text-white px-5 py-2.5 rounded-lg transition-all duration-200 font-medium text-sm mt-2 inline-block text-center">
-              Login to LMS
+              {t('loginToLMS')}
             </a>
+            <div className="pt-2 flex justify-center">
+              <LanguageSwitcher />
+            </div>
           </div>
         </div>
       )}

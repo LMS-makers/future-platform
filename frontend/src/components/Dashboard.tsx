@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Users, GraduationCap, BookOpen, Library } from 'lucide-react';
 import AdminSidebar from './admin/AdminSidebar';
 import AdminHeader from './admin/AdminHeader';
@@ -7,6 +8,7 @@ import UserTable from './admin/UserTable';
 import { adminApi } from '../api/adminApi';
 
 export default function Dashboard() {
+  const { t } = useTranslation('dashboard');
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [usersCount, setUsersCount] = useState<number | null>(null);
   const [studentsCount, setStudentsCount] = useState<number | null>(null);
@@ -19,46 +21,46 @@ export default function Dashboard() {
   const metrics = [
     {
       icon: Users,
-      label: 'Total users',
+      label: t('totalUsers'),
       value: usersCount !== null ? usersCount.toLocaleString() : '—',
-      subtext: 'Registered users',
-      bgColor: 'bg-blue-50',
-      iconColor: 'text-blue-500',
+      subtext: t('registeredUsers'),
+      bgColor: 'bg-blue-50 dark:bg-blue-900/20',
+      iconColor: 'text-blue-500 dark:text-blue-400',
     },
     {
       icon: GraduationCap,
-      label: 'Total Students',
+      label: t('totalStudents'),
       value: studentsCount !== null ? studentsCount.toLocaleString() : '—',
-      subtext: 'Enrolled students',
-      bgColor: 'bg-green-50',
-      iconColor: 'text-green-500',
+      subtext: t('enrolledStudents'),
+      bgColor: 'bg-green-50 dark:bg-green-900/20',
+      iconColor: 'text-green-500 dark:text-green-400',
     },
     {
       icon: BookOpen,
-      label: 'Faculty Members',
+      label: t('facultyMembers'),
       value: '—',
-      subtext: 'Faculty data',
-      bgColor: 'bg-purple-50',
-      iconColor: 'text-purple-500',
+      subtext: t('facultyData'),
+      bgColor: 'bg-purple-50 dark:bg-purple-900/20',
+      iconColor: 'text-purple-500 dark:text-purple-400',
     },
     {
       icon: Library,
-      label: 'Active Courses',
+      label: t('activeCourses'),
       value: '—',
-      subtext: 'Course data',
-      bgColor: 'bg-orange-50',
-      iconColor: 'text-orange-500',
+      subtext: t('courseData'),
+      bgColor: 'bg-orange-50 dark:bg-orange-900/20',
+      iconColor: 'text-orange-500 dark:text-orange-400',
     },
   ];
 
   return (
-    <div className="flex h-screen overflow-hidden text-slate-800">
+    <div className="flex h-screen overflow-hidden bg-surface text-text-primary">
       <AdminSidebar isMobileOpen={sidebarOpen} onMobileClose={() => setSidebarOpen(false)} />
 
       <main className="flex-1 flex flex-col overflow-hidden min-w-0">
         <AdminHeader
-          title="Admin Dashboard"
-          subtitle="System Management & Administration"
+          title={t('title')}
+          subtitle={t('subtitle')}
           onMenuToggle={() => setSidebarOpen(true)}
         />
 

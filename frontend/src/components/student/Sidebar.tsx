@@ -1,18 +1,6 @@
+import { useEffect } from 'react';
 import { LogOut, X } from 'lucide-react';
-
-const navLinks = [
-  { icon: 'grid_view', label: 'Dashboard', active: true },
-  { icon: 'book', label: 'My Courses' },
-  { icon: 'calendar_month', label: 'Schedule' },
-  { icon: 'assignment', label: 'Assignments' },
-  { icon: 'chat', label: 'Messages' },
-  { icon: 'folder', label: 'Resource Library' },
-];
-
-const bottomLinks = [
-  { icon: 'settings', label: 'Settings' },
-  { icon: 'help', label: 'Support' },
-];
+import { useTranslation } from 'react-i18next';
 
 interface SidebarProps {
   onLogout: () => void;
@@ -21,19 +9,48 @@ interface SidebarProps {
 }
 
 export default function Sidebar({ onLogout, isMobileOpen, onMobileClose }: SidebarProps) {
+  const { t } = useTranslation('sidebar');
+
+  useEffect(() => {
+    if (isMobileOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isMobileOpen]);
+
+  const navLinks = [
+    { icon: 'grid_view', label: t('dashboard'), active: true },
+    { icon: 'book', label: t('myCourses') },
+    { icon: 'calendar_month', label: t('schedule') },
+    { icon: 'assignment', label: t('assignments') },
+    { icon: 'chat', label: t('messages') },
+    { icon: 'folder', label: t('resourceLibrary') },
+  ];
+
+  const bottomLinks = [
+    { icon: 'settings', label: t('settings') },
+    { icon: 'help', label: t('support') },
+  ];
+
   const sidebarContent = (
     <div className="flex flex-col h-full">
-      <div className="p-4 lg:p-6 flex items-center gap-3">
+      {/* Logo / Header */}
+      <div className="p-4 lg:p-6 flex items-center gap-3 shrink-0">
         <div className="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center shrink-0">
           <span className="material-symbols-outlined text-white">school</span>
         </div>
-        <div>
-          <h1 className="font-bold text-xl leading-tight">HICIT</h1>
-          <p className="text-[10px] opacity-70 uppercase tracking-widest font-semibold">Future Academy</p>
+        <div className="min-w-0">
+          <h1 className="font-bold text-xl leading-tight truncate">{t('hicit')}</h1>
+          <p className="text-[10px] opacity-70 uppercase tracking-widest font-semibold truncate">{t('futureAcademy')}</p>
         </div>
       </div>
 
-      <nav className="mt-2 lg:mt-4 flex-1 px-3 lg:px-4 space-y-1 lg:space-y-2 overflow-y-auto">
+      {/* Main navigation - scrollable */}
+      <nav className="flex-1 px-3 lg:px-4 space-y-1 overflow-y-auto custom-scrollbar min-h-0">
         {navLinks.map((link) => (
           <a
             key={link.label}
@@ -46,11 +63,15 @@ export default function Sidebar({ onLogout, isMobileOpen, onMobileClose }: Sideb
             }`}
           >
             <span className="material-symbols-outlined text-[20px] shrink-0">{link.icon}</span>
-            <span className="text-sm font-medium">{link.label}</span>
+            <span className="text-sm font-medium truncate">{link.label}</span>
           </a>
         ))}
+      </nav>
 
-        <div className="pt-6 lg:pt-8 space-y-1 lg:space-y-2">
+      {/* Bottom section - always visible */}
+      <div className="shrink-0">
+        {/* Settings / Support */}
+        <div className="px-3 lg:px-4 space-y-1 pb-2">
           {bottomLinks.map((link) => (
             <a
               key={link.label}
@@ -58,51 +79,51 @@ export default function Sidebar({ onLogout, isMobileOpen, onMobileClose }: Sideb
               className="flex items-center gap-3 px-3 lg:px-4 py-2.5 lg:py-3 opacity-70 hover:opacity-100 transition-opacity"
             >
               <span className="material-symbols-outlined text-[20px] shrink-0">{link.icon}</span>
-              <span className="text-sm font-medium">{link.label}</span>
+              <span className="text-sm font-medium truncate">{link.label}</span>
             </a>
           ))}
         </div>
-      </nav>
 
-      <div className="mx-3 lg:mx-4 mb-2 lg:mb-4 p-4 lg:p-5 bg-blue-900/40 rounded-2xl relative overflow-hidden hidden lg:block">
-        <div className="relative z-10">
-          <p className="text-sm font-semibold mb-1">
-            Keep learning,<br />keep growing!
-          </p>
-          <p className="text-[11px] opacity-70 mb-4">You're doing great!</p>
-          <div className="flex justify-center mt-2">
+        {/* Promo card */}
+        <div className="mx-3 lg:mx-4 mb-2 lg:mb-4 p-3 lg:p-4 bg-blue-900/40 rounded-2xl hidden lg:block">
+          <p className="text-xs lg:text-sm font-semibold mb-1 leading-snug" dangerouslySetInnerHTML={{ __html: t('keepLearning') }} />
+          <p className="text-[10px] lg:text-[11px] opacity-70 mb-3">{t('doingGreat')}</p>
+          <div className="flex justify-center">
             <img
               alt="Education illustration"
-              className="w-24 h-auto drop-shadow-lg"
+              className="w-20 h-auto drop-shadow-lg"
               src="https://lh3.googleusercontent.com/aida-public/AB6AXuBnFdncGcSkBHU4E5QQMj5V4EFVH7Nlrn3G49YLuXwsLE3AdEcLowieVLutf2YI_wvn0HgyPXvlcmiWPNBXhoSHkxg1hP0ElyyOzJyxIFLxq4SBbiDY1wAQZtZzalihAIK8dtrYO2bt1zJbIRvJB_GpzEv4AeYpniSow4ebDJIf8OiNgG_sbCkkl2lS2rYmL1uSc4zaWucleJUq85yP4C2xDXv38FitEdyYn5F-zlmhZDOoYHixeXTqrlSB4jZmFcGDLe8Yjv4rGw"
             />
           </div>
         </div>
-      </div>
 
-      <div className="p-3 lg:p-4 border-t border-blue-800/50">
-        <button
-          onClick={onLogout}
-          className="flex items-center gap-2 px-3 lg:px-4 py-2 w-full text-sm text-white/70 hover:text-white hover:bg-blue-800/30 rounded-lg transition-colors"
-        >
-          <LogOut className="w-4 h-4 shrink-0" />
-          <span>Logout</span>
-        </button>
+        {/* Logout */}
+        <div className="p-3 lg:p-4 border-t border-blue-800/50">
+          <button
+            onClick={onLogout}
+            className="flex items-center gap-2 px-3 lg:px-4 py-2 w-full text-sm text-white/70 hover:text-white hover:bg-blue-800/30 rounded-lg transition-colors"
+          >
+            <LogOut className="w-4 h-4 shrink-0" />
+            <span>{t('logout')}</span>
+          </button>
+        </div>
       </div>
     </div>
   );
 
   return (
     <>
-      <aside className="hidden md:flex w-64 bg-[#0a1d4a] text-white flex-col fixed inset-y-0 left-0 z-50">
+      {/* Desktop sidebar */}
+      <aside className="hidden md:flex md:flex-col w-64 bg-[#0a1d4a] text-white fixed inset-y-0 left-0 z-50">
         {sidebarContent}
       </aside>
 
+      {/* Mobile overlay */}
       {isMobileOpen && (
         <div className="fixed inset-0 z-50 md:hidden">
           <div className="absolute inset-0 bg-black/50" onClick={onMobileClose} />
           <aside className="relative w-72 bg-[#0a1d4a] text-white flex flex-col h-full max-w-[85vw]">
-            <div className="absolute top-4 right-4 z-10">
+            <div className="absolute top-4 end-4 z-10">
               <button onClick={onMobileClose} className="text-white/70 hover:text-white p-1">
                 <X className="w-5 h-5" />
               </button>

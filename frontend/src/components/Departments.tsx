@@ -21,7 +21,7 @@ const departments = [
 
 export default function Departments() {
   return (
-    <section className="py-20 bg-white">
+    <section className="py-20 bg-surface">
       <div className="max-w-7xl mx-auto px-6">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <motion.div
@@ -46,7 +46,7 @@ export default function Departments() {
             viewport={{ once: true }}
           >
             <span className="text-primary-700 font-semibold text-sm uppercase tracking-wider">Our Departments</span>
-            <h2 className="text-3xl font-semibold text-neutral-900 mt-2 mb-8">
+            <h2 className="text-3xl font-semibold text-text-primary mt-2 mb-8">
               Departments
             </h2>
 
@@ -58,14 +58,14 @@ export default function Departments() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.1 }}
-                  className="flex flex-col gap-3 p-4 rounded-xl hover:bg-neutral-50 transition-colors duration-200 group"
+                  className="flex flex-col gap-3 p-4 rounded-xl hover:bg-surface-alt transition-colors duration-200 group"
                 >
                   <div className="w-12 h-12 bg-primary-700/10 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:bg-primary-700 transition-colors duration-200">
                     <dept.icon className="text-primary-700 group-hover:text-white transition-colors duration-200" size={24} />
                   </div>
                   <div>
-                    <h3 className="font-bold text-neutral-900 mb-1">{dept.title}</h3>
-                    <p className="text-neutral-500 text-sm leading-relaxed">{dept.description}</p>
+                    <h3 className="font-bold text-text-primary mb-1">{dept.title}</h3>
+                    <p className="text-text-tertiary text-sm leading-relaxed">{dept.description}</p>
                   </div>
                 </motion.div>
               ))}
