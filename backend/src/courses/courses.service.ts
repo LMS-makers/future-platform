@@ -22,13 +22,9 @@ export class CoursesService {
     /**
      * Create a new course
      * @param createCourseDto 
-     * @param instructor_id 
-     * @param admin_id 
      * @returns {message: string, data: {course: Course}}
      */
-    public async createCourse(dto: CreateCourseDto, adminId: string): Promise<{ message: string, data: { course: Course } }> {
-        await this.usersService.checkValidation(adminId, Role.ADMIN);
-
+    public async createCourse(dto: CreateCourseDto): Promise<{ message: string, data: { course: Course } }> {
         const existing = await this.courseRepository.findOne({
             where: { course_code: dto.course_code },
         });
@@ -117,15 +113,12 @@ export class CoursesService {
      * Update course
      * @param id 
      * @param updateCourseDto 
-     * @param admin_id 
      * @returns {message: string, data: {course: Course}}
      */
     public async updateCourse(
         course_id: string,
         updateCourseDto: UpdateCourseDto,
-        admin_id: string,
     ): Promise<{ message: string, data: { course: Course } }> {
-        await this.usersService.checkValidation(admin_id, Role.ADMIN);
         const course = await this.courseRepository.findOne({ where: { id: course_id } });
         if (!course) {
             throw new NotFoundException('Course not found');
@@ -142,14 +135,11 @@ export class CoursesService {
     /**
      * Delete course
      * @param course_id 
-     * @param admin_id 
      * @returns {message: string}
      */
     public async deleteCourse(
         course_id: string,
-        admin_id: string,
     ): Promise<{ message: string }> {
-        await this.usersService.checkValidation(admin_id, Role.ADMIN);
         const course = await this.courseRepository.findOne({ where: { id: course_id } });
         if (!course) {
             throw new NotFoundException('Course not found');
@@ -165,15 +155,12 @@ export class CoursesService {
      * There are some courses need prerequisites to be taken before them, so we need to add prerequisites to them
      * @param courseId The id of the course to add a prerequisite to
      * @param prerequisiteId The id of the prerequisite course that need to be taken before the course
-     * @param adminId
      * @returns {message: string, data: {course: Course}}
      */
     public async addPrerequisite(
         courseId: string,
         addPrerequisiteDto: AddPrerequisiteDto,
-        adminId: string,
     ) {
-        await this.usersService.checkValidation(adminId, Role.ADMIN);
 
         if (courseId === addPrerequisiteDto.prerequisiteId) {
             throw new BadRequestException(

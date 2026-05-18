@@ -23,11 +23,9 @@ export class EnrollmentService {
     /**
      * Create a new enrollment
      * @param dto - Enrollment data
-     * @param admin_id - Admin ID
      * @returns Enrollment created successfully
      */
-    public async createEnrollment(dto: CreateEnrollmentDto, admin_id: string) {
-        await this.usersService.checkValidation(admin_id, Role.ADMIN);
+    public async createEnrollment(dto: CreateEnrollmentDto) {
         const { student_code, course_code, year, semester } = dto;
 
         const student = await this.studentService.getStudentByCode(student_code);
@@ -112,11 +110,9 @@ export class EnrollmentService {
 
     /**
      * Get all enrollments
-     * @param admin_id - Admin ID
      * @returns All enrollments
      */
-    public async getAllEnrollments(admin_id: string) {
-        await this.usersService.checkValidation(admin_id, Role.ADMIN);
+    public async getAllEnrollments() {
         const enrollments = await this.enrollmentRepository.find({
             relations: ['student', 'course'],
         });
@@ -177,8 +173,7 @@ export class EnrollmentService {
      * @param status - Enrollment status
      * @returns Enrollment updated successfully
      */
-    public async updateEnrollmentStatus(id: string, status: EnrollmentStatus, admin_id: string) {
-        await this.usersService.checkValidation(admin_id, Role.ADMIN);
+    public async updateEnrollmentStatus(id: string, status: EnrollmentStatus) {
         const enrollment = await this.enrollmentRepository.findOne({
             where: { id },
         });
@@ -199,11 +194,9 @@ export class EnrollmentService {
     /**
      * Delete enrollment
      * @param id - Enrollment ID
-     * @param admin_id - Admin ID
      * @returns Enrollment deleted successfully
      */
-    public async deleteEnrollment(id: string, admin_id: string) {
-        await this.usersService.checkValidation(admin_id, Role.ADMIN);
+    public async deleteEnrollment(id: string) {
         const enrollment = await this.enrollmentRepository.findOne({
             where: { id },
         });

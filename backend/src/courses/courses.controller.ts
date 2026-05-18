@@ -5,8 +5,6 @@ import { UpdateCourseDto } from "./dtos/update-course.dto";
 import { AuthRolesGuard } from "../users/guards/auth-role.guard";
 import { Roles } from "../users/decorators/user-role.decorator";
 import { Role } from "../../utils/enum";
-import { CurrentUser } from "../users/decorators/current-user.decorator";
-import * as type from '../../utils/type';
 import { AddPrerequisiteDto } from "./dtos/add-prerequisite.dto";
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 
@@ -28,10 +26,9 @@ export class CoursesController {
     @ApiOperation({ summary: 'Create a new course (Admin only)' })
     @ApiResponse({ status: 201, description: 'Course successfully created' })
     create(
-        @Body() createCourseDto: CreateCourseDto,
-        @CurrentUser() user: type.JWTPayloadType
+        @Body() createCourseDto: CreateCourseDto
     ) {
-        return this.coursesService.createCourse(createCourseDto, user.sub);
+        return this.coursesService.createCourse(createCourseDto);
     }
 
     @Post(':course_id/prerequisite')
@@ -41,10 +38,9 @@ export class CoursesController {
     @ApiOperation({ summary: 'Add a prerequisite to a course (Admin only)' })
     addPrerequisite(
         @Param('course_id') course_id: string,
-        @Body() prerequisiteId: AddPrerequisiteDto,
-        @CurrentUser() user: type.JWTPayloadType
+        @Body() prerequisiteId: AddPrerequisiteDto
     ) {
-        return this.coursesService.addPrerequisite(course_id, prerequisiteId, user.sub);
+        return this.coursesService.addPrerequisite(course_id, prerequisiteId);
     }
 
     @Get()
@@ -73,8 +69,7 @@ export class CoursesController {
     async updateCourse(
         @Param('course_id') course_id: string,
         @Body() updateCourseDto: UpdateCourseDto,
-        @CurrentUser() user: type.JWTPayloadType
     ) {
-        return this.coursesService.updateCourse(course_id, updateCourseDto, user.sub);
+        return this.coursesService.updateCourse(course_id, updateCourseDto);
     }
 }

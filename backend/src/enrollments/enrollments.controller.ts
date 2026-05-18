@@ -23,10 +23,9 @@ export class EnrollmentController {
     @ApiOperation({ summary: 'Create a new course enrollment (Admin only)' })
     @ApiResponse({ status: 201, description: 'Enrollment successfully created' })
     async createEnrollment(
-        @Body() createEnrollmentDto: CreateEnrollmentDto,
-        @CurrentUser() user: type.JWTPayloadType
+        @Body() createEnrollmentDto: CreateEnrollmentDto
     ) {
-        return this.enrollmentService.createEnrollment(createEnrollmentDto, user.sub);
+        return this.enrollmentService.createEnrollment(createEnrollmentDto);
     }
 
     @Get(':id')
@@ -61,8 +60,8 @@ export class EnrollmentController {
     @Roles(Role.ADMIN)
     @ApiBearerAuth()
     @ApiOperation({ summary: 'Update enrollment status (Admin only)' })
-    async updateEnrollmentStatus(@Param('id') id: string, @Body() dto: UpdateEnrollmentDto, @CurrentUser() user: type.JWTPayloadType) {
-        return this.enrollmentService.updateEnrollmentStatus(id, dto.status, user.sub);
+    async updateEnrollmentStatus(@Param('id') id: string, @Body() dto: UpdateEnrollmentDto) {
+        return this.enrollmentService.updateEnrollmentStatus(id, dto.status);
     }
 
     @Delete(':id')
@@ -70,7 +69,7 @@ export class EnrollmentController {
     @Roles(Role.ADMIN)
     @ApiBearerAuth()
     @ApiOperation({ summary: 'Delete an enrollment (Admin only)' })
-    async deleteEnrollment(@Param('id') id: string, @CurrentUser() user: type.JWTPayloadType) {
-        return this.enrollmentService.deleteEnrollment(id, user.sub);
+    async deleteEnrollment(@Param('id') id: string) {
+        return this.enrollmentService.deleteEnrollment(id);
     }
 }

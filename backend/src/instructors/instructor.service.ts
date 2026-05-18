@@ -21,12 +21,9 @@ export class InstructorService {
     /**
      * Create a new instructor
      * @param dto {user: CreateUserDto, instructor: CreateInstructorDto}
-     * @param admin_id 
      * @returns {message: string, data: {user: User, instructor: Instructor}}
      */
-    public async createInstructor(dto: CreateInstructorDto, admin_id: string) {
-        await this.usersService.checkValidation(admin_id, Role.ADMIN);
-
+    public async createInstructor(dto: CreateInstructorDto) {
         const { user, ...instructorData } = dto;
 
         const existingUser = await this.userRepository.findOne({

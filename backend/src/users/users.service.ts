@@ -11,6 +11,7 @@ import { User } from './entities/user.entity';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { Role } from '../../utils/enum';
 import { UpdateUserDto } from './dtos/update-user.dto';
+import { PaginationDto } from './dtos/pagination.dto';
 
 @Injectable()
 export class UsersService {
@@ -25,7 +26,8 @@ export class UsersService {
   }
 
   // Get All Users
-  public async getAllUsers(page?: number, limit?: number) {
+  public async getAllUsers(paginationDto: PaginationDto) {
+    const { page, limit } = paginationDto;
     const [users, count] = await this.usersRepository.findAndCount({
       skip: page ? (page - 1) * limit : 0,
       take: limit ? limit : 10,
@@ -144,9 +146,7 @@ export class UsersService {
    */
   public async addUser(
     createUserDto: CreateUserDto,
-    userId: string,
   ): Promise<User> {
-    await this.checkValidation(userId, Role.ADMIN);
 
     const { password, ...rest } = createUserDto;
 
@@ -173,9 +173,7 @@ export class UsersService {
    */
   public async deleteUser(
     id: string,
-    userId: string,
   ): Promise<{ message: string }> {
-    await this.checkValidation(userId, Role.ADMIN);
     const user = await this.findById(id);
     await this.usersRepository.remove(user);
     return {
@@ -192,9 +190,7 @@ export class UsersService {
   public async updateUser(
     id: string,
     updateUserDto: UpdateUserDto,
-    userId: string,
   ): Promise<User> {
-    await this.checkValidation(userId, Role.ADMIN);
 
     const user = await this.findById(id);
 

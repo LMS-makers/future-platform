@@ -2,8 +2,6 @@ import { BadRequestException, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { InstructorCourse } from "./entities/assign-course.entity";
 import { Repository } from "typeorm";
-import { Role } from "../../utils/enum";
-import { UsersService } from "../users/users.service";
 import { AssignCourseDto } from "./dtos/assign-course.dto";
 import { InstructorService } from "../instructors/instructor.service";
 import { CoursesService } from "../courses/courses.service";
@@ -13,13 +11,11 @@ export class AssignCourseService {
     constructor(
         @InjectRepository(InstructorCourse)
         private readonly instructorCourseRepository: Repository<InstructorCourse>,
-        private readonly usersService: UsersService,
         private readonly instructorService: InstructorService,
         private readonly coursesService: CoursesService,
     ) { }
 
-    public async assignCourse(dto: AssignCourseDto, adminId: string) {
-        await this.usersService.checkValidation(adminId, Role.ADMIN);
+    public async assignCourse(dto: AssignCourseDto) {
         await this.instructorService.getInstructorById(dto.instructor_id);
         await this.coursesService.getCourse(dto.course_id);
 

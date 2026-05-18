@@ -177,7 +177,6 @@ export class GradesService {
         await this.enrollmentsService.updateEnrollmentStatus(
             grade.enrollment.id,
             grade.total >= 50 ? EnrollmentStatus.PASSED : EnrollmentStatus.FAILED,
-            "c2e7e993-c246-4d04-a029-0996f368c891"
         );
 
         return this.gradeRepository.save(grade);

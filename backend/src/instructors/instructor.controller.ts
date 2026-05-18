@@ -1,11 +1,9 @@
-import { Controller, Post, Body, Param, UseGuards, Get } from "@nestjs/common";
+import { Controller, Post, Body, UseGuards, Get } from "@nestjs/common";
 import { InstructorService } from "./instructor.service";
 import { AuthRolesGuard } from "../users/guards/auth-role.guard";
 import { Roles } from "../users/decorators/user-role.decorator";
 import { Role } from "../../utils/enum";
 import { CreateInstructorDto } from "./dtos/create-instructor.dto";
-import { CurrentUser } from "../users/decorators/current-user.decorator";
-import * as type from '../../utils/type';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 
 @ApiTags('Instructors')
@@ -19,8 +17,8 @@ export class InstructorController {
     @ApiBearerAuth()
     @ApiOperation({ summary: 'Create a new instructor (Admin only)' })
     @ApiResponse({ status: 201, description: 'Instructor successfully created' })
-    create(@Body() createInstructorDto: CreateInstructorDto, @CurrentUser() user: type.JWTPayloadType) {
-        return this.instructorService.createInstructor(createInstructorDto, user.sub);
+    create(@Body() createInstructorDto: CreateInstructorDto) {
+        return this.instructorService.createInstructor(createInstructorDto);
     }
 
     @Get('count')

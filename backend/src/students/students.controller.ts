@@ -31,11 +31,8 @@ export class StudentsController {
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Create a new student (Admin only)' })
   @ApiResponse({ status: 201, description: 'Student successfully created' })
-  public async createStudent(
-    @Body() createStudentDto: CreateStudentDto,
-    @CurrentUser() user: type.JWTPayloadType,
-  ) {
-    return this.studentsService.createStudent(createStudentDto, user.sub);
+  public async createStudent(@Body() createStudentDto: CreateStudentDto) {
+    return this.studentsService.createStudent(createStudentDto);
   }
 
   // GET ~/api/students?level=Level&department=Department&gender=Gender

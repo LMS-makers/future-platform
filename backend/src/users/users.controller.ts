@@ -25,6 +25,7 @@ import { UpdateUserDto } from './dtos/update-user.dto';
 import { InitLoginDto } from './dtos/init-login.dto';
 import { SetPasswordDto } from './dtos/set-password.dto';
 import { ApiBearerAuth, ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { PaginationDto } from './dtos/pagination.dto';
 
 @ApiTags('Users')
 @Controller('api/users')
@@ -88,12 +89,8 @@ export class UsersController {
   @Roles(Role.ADMIN)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get all users' })
-  @ApiQuery({ name: 'page', type: 'number', required: false, description: 'Page number' })
-  @ApiQuery({ name: 'limit', type: 'number', required: false, description: 'Number of items per page' })
-  getAllUsers(@Query('page') page?: number, @Query('limit') limit?: number) {
-    if(page < 1) page = 1;
-    if(limit < 1) limit = 1;
-    return this.usersService.getAllUsers(page, limit);
+  getAllUsers(@Query() paginationDto: PaginationDto) {
+    return this.usersService.getAllUsers(paginationDto);
   }
 
   // DELETE: ~/api/users/delete/:id
@@ -102,11 +99,8 @@ export class UsersController {
   @Roles(Role.ADMIN)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Delete a user (Admin only)' })
-  deleteUser(
-    @Param('id') id: string,
-    @CurrentUser() user: type.JWTPayloadType,
-  ) {
-    return this.usersService.deleteUser(id, user.sub);
+  deleteUser(@Param('id') id: string) {
+    return this.usersService.deleteUser(id);
   }
 
   // PATCH: ~/api/users/update/:id
@@ -118,9 +112,8 @@ export class UsersController {
   updateUser(
     @Param('id') id: string,
     @Body() updateUserDto: UpdateUserDto,
-    @CurrentUser() user: type.JWTPayloadType,
   ) {
-    return this.usersService.updateUser(id, updateUserDto, user.sub);
+    return this.usersService.updateUser(id, updateUserDto);
   }
 
   // POST: ~/api/users/add
@@ -131,9 +124,8 @@ export class UsersController {
   @ApiOperation({ summary: 'Add a new user (Admin only)' })
   addUser(
     @Body() createUserDto: CreateUserDto,
-    @CurrentUser() user: type.JWTPayloadType,
   ) {
-    return this.usersService.addUser(createUserDto, user.sub);
+    return this.usersService.addUser(createUserDto);
   }
 
   // GET: ~/api/users/count

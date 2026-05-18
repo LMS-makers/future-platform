@@ -27,8 +27,7 @@ export class StudentsService {
    * @param dto {user: CreateUserDto, student: CreateStudentDto}
    * @returns {message: string, data: {user: User, student: Student}}
    */
-  public async createStudent(dto: CreateStudentDto, admin_id: string) {
-    await this.usersService.checkValidation(admin_id, Role.ADMIN);
+  public async createStudent(dto: CreateStudentDto) {
 
     const { user, ...studentData } = dto;
 
