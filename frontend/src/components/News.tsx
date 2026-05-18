@@ -8,30 +8,36 @@ function NewsCard({ item }: { item: NewsArticle }) {
 	const [expanded, setExpanded] = useState(false);
 	const { t } = useTranslation('landing');
 
+	const key = `newsArticle${item.id}`;
+	const category = t(`${key}.category`, item.category);
+	const title = t(`${key}.title`, item.title);
+	const content = t(`${key}.content`, item.fullContent);
+	const date = t(`${key}.date`, item.date);
+
 	return (
 		<div className="bg-surface-card rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 h-full">
 			<div className="relative overflow-hidden">
 				<img
 					src={item.image}
-					alt={item.title}
+					alt={title}
 					className="w-full h-48 object-cover transition-transform duration-500 hover:scale-105"
 					loading="lazy"
 					onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
 				/>
 				<span className="absolute top-4 left-4 bg-primary-700 text-white text-xs font-semibold px-3 py-1 rounded-full">
-					{item.category}
+					{category}
 				</span>
 			</div>
 			<div className="p-6">
-				<time className="text-text-tertiary text-xs">{item.date}</time>
+				<time className="text-text-tertiary text-xs">{date}</time>
 				<h3 className="text-lg font-bold text-text-primary mt-2 mb-2">
-					{item.title}
+					{title}
 				</h3>
 				<div className="mb-4 overflow-hidden">
 					<p
 						className={`text-text-secondary text-sm leading-relaxed transition-all duration-300 ${expanded ? "" : "line-clamp-3"}`}
 					>
-						{item.fullContent}
+						{content}
 					</p>
 				</div>
 
