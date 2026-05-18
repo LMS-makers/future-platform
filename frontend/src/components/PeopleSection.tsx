@@ -101,12 +101,13 @@ export default function PeopleSection() {
                     className="group bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition-all duration-300 border border-neutral-100 hover:border-primary-200"
                   >
                     <div className="flex items-center gap-4 mb-4">
-                      <img
-                        src={person.avatar}
-                        alt={person.name}
-                        className="w-14 h-14 rounded-full object-cover group-hover:scale-110 transition-transform duration-300"
-                        loading="lazy"
-                      />
+					  <img
+							src={person.avatar}
+							alt={person.name}
+							className="w-14 h-14 rounded-full object-cover group-hover:scale-110 transition-transform duration-300"
+							loading="lazy"
+							onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+						/>
                       <div>
                         <h3 className="font-bold text-neutral-900">{person.name}</h3>
                         <p className="text-primary-700 text-xs font-medium">{person.role}</p>

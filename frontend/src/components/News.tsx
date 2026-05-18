@@ -14,6 +14,7 @@ function NewsCard({ item }: { item: NewsArticle }) {
 					alt={item.title}
 					className="w-full h-48 object-cover transition-transform duration-500 hover:scale-105"
 					loading="lazy"
+					onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
 				/>
 				<span className="absolute top-4 left-4 bg-primary-700 text-white text-xs font-semibold px-3 py-1 rounded-full">
 					{item.category}

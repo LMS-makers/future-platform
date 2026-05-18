@@ -10,6 +10,10 @@ export interface NewsArticle {
 	date: string;
 }
 
+import newsImg1 from "../assets/imgs/662378206_122196762884480673_1454271112811371948_n 1.png";
+import newsImg2 from "../assets/imgs/image 23.png";
+import newsImg3 from "../assets/imgs/image 28.png";
+
 /**
  * Default news articles data
  * TODO: Replace with API call in production
@@ -17,7 +21,7 @@ export interface NewsArticle {
 export const defaultNewsArticles: NewsArticle[] = [
 	{
 		id: 1,
-		image: "src/assets/imgs/662378206_122196762884480673_1454271112811371948_n 1.png",
+		image: newsImg1,
 		category: "Events",
 		title: "Annual Tech Summit 2025",
 		fullContent:
@@ -26,7 +30,7 @@ export const defaultNewsArticles: NewsArticle[] = [
 	},
 	{
 		id: 2,
-		image: "src/assets/imgs/image 23.png",
+		image: newsImg2,
 		category: "Achievement",
 		title: "Advancing AI Research at the Institute",
 		fullContent:
@@ -35,7 +39,7 @@ export const defaultNewsArticles: NewsArticle[] = [
 	},
 	{
 		id: 3,
-		image: "src/assets/imgs/image 28.png",
+		image: newsImg3,
 		category: "Partnership",
 		title: "New Partnership with Tech Giants",
 		fullContent:

@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { ArrowRight, BookOpen, Calendar, BarChart } from "lucide-react";
+import lmsDashboard from "../assets/imgs/Screenshot 2026-05-14 190928.png";
 
 export default function LMSSection() {
 	return (
@@ -72,7 +73,7 @@ export default function LMSSection() {
 									</span>
 								</div>
 								<img
-									src="src/assets/imgs/Screenshot 2026-05-14 190928.png"
+									src={lmsDashboard}
 									alt="LMS Dashboard"
 									className="w-full h-auto"
 									loading="lazy"

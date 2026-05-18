@@ -45,6 +45,7 @@ export default function DepartmentsGrid() {
 									alt={program.title}
 									className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-500"
 									loading="lazy"
+									onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
 								/>
 								<div className="absolute inset-0 bg-gradient-to-t from-primary-900/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 							</div>
@@ -90,6 +91,7 @@ export default function DepartmentsGrid() {
 									src={selectedProgram.image}
 									alt={selectedProgram.title}
 									className="w-full h-56 object-cover"
+									onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
 								/>
 								<div className="absolute inset-0 bg-gradient-to-t from-primary-900/60 to-transparent" />
 								<button
