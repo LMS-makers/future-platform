@@ -17,7 +17,7 @@ export interface NewsArticle {
 export const defaultNewsArticles: NewsArticle[] = [
 	{
 		id: 1,
-		image: "../../src/assets/imgs/image 23.png",
+		image: "src/assets/imgs/662378206_122196762884480673_1454271112811371948_n 1.png",
 		category: "Events",
 		title: "Annual Tech Summit 2025",
 		fullContent:
@@ -26,7 +26,7 @@ export const defaultNewsArticles: NewsArticle[] = [
 	},
 	{
 		id: 2,
-		image: "../../src/assets/imgs/image 28.png",
+		image: "src/assets/imgs/image 23.png",
 		category: "Achievement",
 		title: "Advancing AI Research at the Institute",
 		fullContent:
@@ -35,7 +35,7 @@ export const defaultNewsArticles: NewsArticle[] = [
 	},
 	{
 		id: 3,
-		image: "../../src/assets/imgs/662378206_122196762884480673_1454271112811371948_n 1.png",
+		image: "src/assets/imgs/image 28.png",
 		category: "Partnership",
 		title: "New Partnership with Tech Giants",
 		fullContent:
