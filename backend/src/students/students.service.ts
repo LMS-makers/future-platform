@@ -72,7 +72,7 @@ export class StudentsService {
 
         ...studentData,
 
-        enrollment_date: new Date(studentData.enrollment_date),
+        enrollment_date: studentData.enrollment_date ? new Date(studentData.enrollment_date) : new Date(),
       });
 
       const savedStudent = await manager.save(newStudent);

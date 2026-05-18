@@ -50,7 +50,7 @@ export default function Sidebar({ onLogout, isMobileOpen, onMobileClose }: Sideb
       </div>
 
       {/* Main navigation - scrollable */}
-      <nav className="flex-1 px-3 lg:px-4 space-y-1 overflow-y-auto custom-scrollbar min-h-0">
+      <nav className="flex-1 px-3 lg:px-4 space-y-1 overflow-y-auto custom-scrollbar hide-scrollbar min-h-0">
         {navLinks.map((link) => (
           <a
             key={link.label}

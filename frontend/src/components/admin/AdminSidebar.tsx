@@ -55,7 +55,7 @@ export default function AdminSidebar({ isMobileOpen, onMobileClose }: AdminSideb
         </div>
       </div>
 
-      <nav className="flex-1 py-2 lg:py-4 flex flex-col gap-1 overflow-y-auto">
+      <nav className="flex-1 py-2 lg:py-4 flex flex-col gap-1 overflow-y-auto hide-scrollbar">
         {mainLinks.map((link) => {
           const active = isActive(link.path);
           return (

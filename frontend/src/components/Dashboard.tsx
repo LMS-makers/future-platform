@@ -64,7 +64,7 @@ export default function Dashboard() {
           onMenuToggle={() => setSidebarOpen(true)}
         />
 
-        <div className="flex-1 overflow-y-auto p-4 lg:p-8">
+        <div className="flex-1 overflow-y-auto p-4 lg:p-8 hide-scrollbar">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 mb-6 lg:mb-8">
             {metrics.map((m) => (
               <MetricsCard key={m.label} {...m} />

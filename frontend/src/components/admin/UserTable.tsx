@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Search, Plus, Users, Shield, UserCheck, X, Loader2, Pencil, Trash2, AlertTriangle } from 'lucide-react';
 import { toast } from 'react-hot-toast';
-import { adminApi, type AddUserPayload, type UpdateUserPayload, type CreateStudentPayload } from '../../api/adminApi';
+import { adminApi, type AddUserPayload, type UpdateUserPayload } from '../../api/adminApi';
 import type { AdminUser } from '../../types/auth.types';
 
 const ITEMS_PER_PAGE = 5;
@@ -25,17 +25,6 @@ const initialCreateForm = {
   phone: '',
   address: '',
   gender: '' as '' | 'male' | 'female',
-  student_code: '',
-  department: '' as '' | 'cs' | 'is' | 'it' | 'general',
-  level: '' as '' | '1' | '2' | '3' | '4',
-  semester: '' as '' | '1' | '2',
-  completed_credit_hours: '',
-  gpa: '',
-  cgpa: '',
-  high_school_type: '' as '' | 'science_section' | 'mathematics_section' | 'general_section',
-  high_school_score: '',
-  high_school_degree: '',
-  high_school_year: '',
 };
 
 export default function UserTable() {
@@ -108,20 +97,6 @@ export default function UserTable() {
     if (!createForm.address.trim()) missing.push(t('address', { ns: 'forms' }));
     if (!createForm.gender) missing.push(t('gender', { ns: 'forms' }));
 
-    if (createForm.role === 'student') {
-      if (!createForm.student_code.trim()) missing.push(t('studentCode', { ns: 'forms' }));
-      if (!createForm.department) missing.push(t('department', { ns: 'forms' }));
-      if (!createForm.level) missing.push(t('level', { ns: 'forms' }));
-      if (!createForm.semester) missing.push(t('semester', { ns: 'forms' }));
-      if (!createForm.completed_credit_hours.trim()) missing.push(t('completedCreditHours', { ns: 'forms' }));
-      if (!createForm.gpa.trim()) missing.push(t('gpa', { ns: 'forms' }));
-      if (!createForm.cgpa.trim()) missing.push(t('cgpa', { ns: 'forms' }));
-      if (!createForm.high_school_type) missing.push(t('highSchoolType', { ns: 'forms' }));
-      if (!createForm.high_school_score.trim()) missing.push(t('highSchoolScore', { ns: 'forms' }));
-      if (!createForm.high_school_degree.trim()) missing.push(t('highSchoolDegree', { ns: 'forms' }));
-      if (!createForm.high_school_year.trim()) missing.push(t('highSchoolYear', { ns: 'forms' }));
-    }
-
     if (createForm.phone.trim() && createForm.phone.trim().length < 11) {
       setCreateError(t('phoneMinChars'));
       return;
@@ -149,25 +124,7 @@ export default function UserTable() {
         gender: createForm.gender as 'male' | 'female',
       };
 
-      if (createForm.role === 'student') {
-        const studentPayload: CreateStudentPayload = {
-          ...base,
-          student_code: createForm.student_code.trim(),
-          department: createForm.department as 'cs' | 'is' | 'it' | 'general',
-          level: Number(createForm.level),
-          semester: Number(createForm.semester),
-          completed_credit_hours: Number(createForm.completed_credit_hours),
-          gpa: Number(createForm.gpa),
-          cgpa: Number(createForm.cgpa),
-          high_school_type: createForm.high_school_type as 'science_section' | 'mathematics_section' | 'general_section',
-          high_school_score: Number(createForm.high_school_score),
-          high_school_degree: Number(createForm.high_school_degree),
-          high_school_year: Number(createForm.high_school_year),
-        };
-        await adminApi.createStudent(studentPayload);
-      } else {
-        await adminApi.addUser(base as AddUserPayload);
-      }
+      await adminApi.addUser(base as AddUserPayload);
       toast.success(t('userCreated'));
       setShowCreateModal(false);
       setCreateForm(initialCreateForm);
@@ -244,7 +201,7 @@ export default function UserTable() {
   return (
     <>
       <div className="bg-surface-card rounded-xl shadow-card overflow-hidden border border-blue-600">
-        <div className="flex border-b border-border px-4 lg:px-6 pt-4 overflow-x-auto">
+        <div className="flex border-b border-border px-4 lg:px-6 pt-4 overflow-x-auto hide-scrollbar">
           <button className="flex items-center gap-2 pb-4 px-3 lg:px-4 border-b-2 border-blue-600 text-blue-600 font-semibold text-sm whitespace-nowrap">
             <Users className="w-5 h-5 shrink-0" />
             {t('userManagement')}
@@ -320,7 +277,7 @@ export default function UserTable() {
         ) : (
           <>
             {/* Desktop table */}
-            <div className="hidden md:block overflow-x-auto">
+            <div className="hidden md:block overflow-x-auto hide-scrollbar">
               <table className="min-w-full divide-y divide-border">
                 <thead className="bg-table-header">
                    <tr>
@@ -437,7 +394,7 @@ export default function UserTable() {
               <span className="mx-2">·</span>
               <span>{t('page', { ns: 'common' })} {safePage} {t('of', { ns: 'common' })} {totalPages}</span>
             </div>
-            <nav className="flex rounded-md shadow-card -space-x-px overflow-x-auto">
+            <nav className="flex rounded-md shadow-card -space-x-px overflow-x-auto hide-scrollbar">
               <button
                 onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                 disabled={safePage === 1}
@@ -481,7 +438,7 @@ export default function UserTable() {
       {showCreateModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-3 lg:p-4">
           <div className="absolute inset-0 bg-surface-overlay backdrop-blur-sm" onClick={() => !createLoading && setShowCreateModal(false)} />
-          <div className="relative bg-surface-elevated rounded-2xl shadow-2xl p-5 lg:p-8 max-w-md w-full border border-border max-h-[90vh] overflow-y-auto mx-auto">
+          <div className="relative bg-surface-elevated rounded-2xl shadow-2xl p-5 lg:p-8 max-w-md w-full border border-border max-h-[90vh] overflow-y-auto mx-auto hide-scrollbar">
              <div className="flex items-center justify-between mb-5 lg:mb-6">
                <h3 className="text-lg lg:text-xl font-bold text-text-primary">{t('createNewUser')}</h3>
                <button onClick={() => { setShowCreateModal(false); setCreateError(''); }} disabled={createLoading} className="text-text-muted hover:text-text-secondary p-1">
@@ -533,75 +490,7 @@ export default function UserTable() {
                   <option value="female">{t('female')}</option>
                 </select>
               </div>
-              {createForm.role === 'student' && (
-                <>
-                  <div>
-                    <label className="block text-sm font-semibold text-text-secondary mb-1">{t('studentCode', { ns: 'forms' })} *</label>
-                     <input className="block w-full px-3 lg:px-4 py-2 lg:py-2.5 bg-input-bg border border-border-input rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent" type="text" placeholder={t('enterStudentCode', { ns: 'forms' })} value={createForm.student_code} onChange={(e) => setCreateForm({ ...createForm, student_code: e.target.value })} disabled={createLoading} />
-                   </div>
-                   <div>
-                     <label className="block text-sm font-semibold text-text-secondary mb-1">{t('department', { ns: 'forms' })} *</label>
-                    <select className="block w-full px-3 lg:px-4 py-2 lg:py-2.5 bg-input-bg border border-border-input rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent" value={createForm.department} onChange={(e) => setCreateForm({ ...createForm, department: e.target.value as 'cs' | 'is' | 'it' | 'general' })} disabled={createLoading}>
-                      <option value="">{t('selectDepartment', { ns: 'forms' })}</option>
-                      <option value="cs">{t('cs')}</option>
-                      <option value="is">{t('is')}</option>
-                      <option value="it">{t('it')}</option>
-                      <option value="general">{t('general')}</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-semibold text-text-secondary mb-1">{t('level', { ns: 'forms' })} *</label>
-                    <select className="block w-full px-3 lg:px-4 py-2 lg:py-2.5 bg-input-bg border border-border-input rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent" value={createForm.level} onChange={(e) => setCreateForm({ ...createForm, level: e.target.value as '1' | '2' | '3' | '4' })} disabled={createLoading}>
-                      <option value="">{t('selectLevel', { ns: 'forms' })}</option>
-                      <option value="1">{t('level1')}</option>
-                      <option value="2">{t('level2')}</option>
-                      <option value="3">{t('level3')}</option>
-                      <option value="4">{t('level4')}</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-semibold text-text-secondary mb-1">{t('semester', { ns: 'forms' })} *</label>
-                    <select className="block w-full px-3 lg:px-4 py-2 lg:py-2.5 bg-input-bg border border-border-input rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent" value={createForm.semester} onChange={(e) => setCreateForm({ ...createForm, semester: e.target.value as '1' | '2' })} disabled={createLoading}>
-                      <option value="">{t('selectSemester', { ns: 'forms' })}</option>
-                      <option value="1">{t('semester1')}</option>
-                      <option value="2">{t('semester2')}</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-semibold text-text-secondary mb-1">{t('completedCreditHours', { ns: 'forms' })} *</label>
-                    <input className="block w-full px-3 lg:px-4 py-2 lg:py-2.5 bg-input-bg border border-border-input rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent" type="number" placeholder="0" value={createForm.completed_credit_hours} onChange={(e) => setCreateForm({ ...createForm, completed_credit_hours: e.target.value })} disabled={createLoading} />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-semibold text-text-secondary mb-1">{t('gpa', { ns: 'forms' })} *</label>
-                    <input className="block w-full px-3 lg:px-4 py-2 lg:py-2.5 bg-input-bg border border-border-input rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent" type="number" step="0.01" placeholder="0.00" value={createForm.gpa} onChange={(e) => setCreateForm({ ...createForm, gpa: e.target.value })} disabled={createLoading} />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-semibold text-text-secondary mb-1">{t('cgpa', { ns: 'forms' })} *</label>
-                    <input className="block w-full px-3 lg:px-4 py-2 lg:py-2.5 bg-input-bg border border-border-input rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent" type="number" step="0.01" placeholder="0.00" value={createForm.cgpa} onChange={(e) => setCreateForm({ ...createForm, cgpa: e.target.value })} disabled={createLoading} />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-semibold text-text-secondary mb-1">{t('highSchoolType', { ns: 'forms' })} *</label>
-                    <select className="block w-full px-3 lg:px-4 py-2 lg:py-2.5 bg-input-bg border border-border-input rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent" value={createForm.high_school_type} onChange={(e) => setCreateForm({ ...createForm, high_school_type: e.target.value as 'science_section' | 'mathematics_section' | 'general_section' })} disabled={createLoading}>
-                      <option value="">{t('selectHighSchoolType', { ns: 'forms' })}</option>
-                      <option value="science_section">{t('scienceSection')}</option>
-                      <option value="mathematics_section">{t('mathematicsSection')}</option>
-                      <option value="general_section">{t('generalSection')}</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-semibold text-text-secondary mb-1">{t('highSchoolScore', { ns: 'forms' })} *</label>
-                    <input className="block w-full px-3 lg:px-4 py-2 lg:py-2.5 bg-input-bg border border-border-input rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent" type="number" step="0.01" placeholder="0.00" value={createForm.high_school_score} onChange={(e) => setCreateForm({ ...createForm, high_school_score: e.target.value })} disabled={createLoading} />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-semibold text-text-secondary mb-1">{t('highSchoolDegree', { ns: 'forms' })} *</label>
-                    <input className="block w-full px-3 lg:px-4 py-2 lg:py-2.5 bg-input-bg border border-border-input rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent" type="number" step="0.01" placeholder="0.00" value={createForm.high_school_degree} onChange={(e) => setCreateForm({ ...createForm, high_school_degree: e.target.value })} disabled={createLoading} />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-semibold text-text-secondary mb-1">{t('highSchoolYear', { ns: 'forms' })} *</label>
-                    <input className="block w-full px-3 lg:px-4 py-2 lg:py-2.5 bg-input-bg border border-border-input rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent" type="number" placeholder="e.g. 2024" value={createForm.high_school_year} onChange={(e) => setCreateForm({ ...createForm, high_school_year: e.target.value })} disabled={createLoading} />
-                  </div>
-                </>
-              )}
+
               {createError && <div className="text-red-600 text-sm font-medium bg-red-50 dark:bg-red-900/20 px-4 py-2.5 rounded-lg border border-red-200 dark:border-red-800">{createError}</div>}
               <button type="submit" disabled={createLoading} className="w-full flex justify-center items-center py-2.5 px-4 border border-transparent rounded-xl shadow-md text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
                 {createLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : t('createUser')}
@@ -615,7 +504,7 @@ export default function UserTable() {
       {editingUser && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-3 lg:p-4">
           <div className="absolute inset-0 bg-surface-overlay backdrop-blur-sm" onClick={() => !editLoading && setEditingUser(null)} />
-          <div className="relative bg-surface-elevated rounded-2xl shadow-2xl p-5 lg:p-8 max-w-lg w-full border border-border max-h-[90vh] overflow-y-auto mx-auto">
+          <div className="relative bg-surface-elevated rounded-2xl shadow-2xl p-5 lg:p-8 max-w-lg w-full border border-border max-h-[90vh] overflow-y-auto mx-auto hide-scrollbar">
              <div className="flex items-center justify-between mb-5 lg:mb-6">
                <h3 className="text-lg lg:text-xl font-bold text-text-primary">{t('editUserTitle')}</h3>
                <button onClick={() => { setEditingUser(null); setEditError(''); }} disabled={editLoading} className="text-text-muted hover:text-text-secondary p-1">

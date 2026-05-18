@@ -37,5 +37,6 @@
   "veryGood": "Very Good",
   "good": "Good",
   "atRisk": "At Risk",
-  "failedToLoadDashboard": "Failed to load dashboard data"
+  "failedToLoadDashboard": "Failed to load dashboard data",
+  "learnMore": "Learn More"
 }
