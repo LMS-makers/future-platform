@@ -72,8 +72,8 @@ export enum Grade {
     D = 'D',
     D_MINUS = 'D-',
     F = 'F',
-    FX = 'FX',   // رسوب بالغياب
-    IC = 'IC',   // Incomplete
+    FX = 'FX',
+    IC = 'IC',
     W = 'W', 
 }
 

@@ -30,18 +30,18 @@ import { GradesModule } from './grades/grades.module';
       inject: [ConfigService],
       useFactory: typeOrmConfig,
     }),
-    ThrottlerModule.forRoot([{
-      ttl: 60000,
-      limit: 5,
-    }]),
+    // ThrottlerModule.forRoot([{
+    //   ttl: 60000,
+    //   limit: 5,
+    // }]),
   ],
   controllers: [AppController],
   providers: [
     AppService,
-    {
-      provide: APP_GUARD,
-      useClass: ThrottlerGuard,
-    }
+    // {
+    //   provide: APP_GUARD,
+    //   useClass: ThrottlerGuard,
+    // }
   ],
 })
 export class AppModule { }

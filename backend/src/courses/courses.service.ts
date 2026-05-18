@@ -94,6 +94,7 @@ export class CoursesService {
         };
     }
 
+    // Get Course By Code
     public async getCourseByCode(course_code: string): Promise<{ message: string, data: { course: Course } }> {
         const course = await this.courseRepository.findOne({
             where: { course_code },
